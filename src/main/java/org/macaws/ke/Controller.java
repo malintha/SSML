@@ -101,9 +101,20 @@ public class Controller {
         }
     }
 
-    public void preProcess(int itr) throws FileNotFoundException {
+    public String[] preProcess(int itr) throws FileNotFoundException {
         String[] rawSentences = fixSentences(itr);
+        String[] finedSentences = new String[rawSentences.length];
+        String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\d+\\])*)(\\^*)(\\w*)";
+        String groupSqrBrackets = "$1$6";
+        String removeExtraSpaces = "(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)";
+        String groupExtraSpaces = "$1$2$3$5$6";
+        String temp;
 
+        for(int i=0;i<1000;i++) {
+            temp = rawSentences[i].replaceAll(removeSqrBrackets,groupSqrBrackets);
+            finedSentences[i] = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
+        }
+    return finedSentences;
     }
 
 }
