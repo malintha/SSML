@@ -51,7 +51,6 @@ public class FeatureExtraction {
             ++stats.n; //increase the number of observations
             category = doc.category;
             
-            
             //increase the category counter by one
             categoryCount = stats.categoryCounts.get(category);
             if(categoryCount==null) {
