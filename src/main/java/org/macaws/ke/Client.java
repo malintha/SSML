@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Created by Malintha on 10/13/2015.
@@ -17,9 +18,9 @@ public class Client {
 //            c.crawlController.start(MyCrawler.class,5);
 //            c.readFromNet(1);
             Controller c = new Controller();
-            String[] s = c.preProcess(1);
+            ArrayList<String> s = c.preProcess(1);
             for(int i=0;i<1000;i++)
-                System.out.println(s[i]);
+                System.out.println(s.get(i));
 
         } catch (Exception e) {
             e.printStackTrace();

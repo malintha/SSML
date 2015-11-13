@@ -9,6 +9,7 @@ import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Created by Malintha on 10/13/2015.
@@ -101,18 +102,28 @@ public class Controller {
         }
     }
 
-    public String[] preProcess(int itr) throws FileNotFoundException {
+    public ArrayList<String> preProcess(int itr) throws FileNotFoundException {
         String[] rawSentences = fixSentences(itr);
-        String[] finedSentences = new String[rawSentences.length];
+        ArrayList<String> finedSentences = new ArrayList<String>();
         String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\d+\\])*)(\\^*)(\\w*)";
         String groupSqrBrackets = "$1$6";
         String removeExtraSpaces = "(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)";
+        String addSpaceBetweenSentences = "(.*\\.)(\\w+.*)";
         String groupExtraSpaces = "$1$2$3$5$6";
-        String temp;
+        String temp,temp1,temp2,temp3;
+
 
         for(int i=0;i<1000;i++) {
-            temp = rawSentences[i].replaceAll(removeSqrBrackets,groupSqrBrackets);
-            finedSentences[i] = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
+            temp = rawSentences[i].replaceAll(removeSqrBrackets, groupSqrBrackets);
+            temp1 = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
+            if(temp1.matches(addSpaceBetweenSentences)){
+                temp2=temp1.replaceAll(addSpaceBetweenSentences,"$1");
+                temp3=temp1.replaceAll(addSpaceBetweenSentences,"$2");
+                finedSentences.add(temp2);
+                finedSentences.add(temp3);
+            }
+            else
+                finedSentences.add(temp1);
         }
     return finedSentences;
     }

@@ -29,7 +29,7 @@ public class CricketClassifier {
             trainingExamples.put(entry.getKey(), readLines(entry.getValue()));
         }
         NaiveBayes nb = new NaiveBayes();
-        nb.setChisquareCriticalValue(10);
+        nb.setChisquareCriticalValue(7.88); //0.005 accuracy
         nb.train(trainingExamples);
         NaiveBayesKnowledgeBase knowledgeBase = nb.getKnowledgeBase();
         System.out.println("# Done Training");
