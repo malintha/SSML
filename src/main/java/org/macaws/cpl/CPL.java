@@ -52,7 +52,6 @@ public class CPL {
         bowler.add("Ishant Sharma");
         bowler.add("Brett Lee");
         bowler.add("Shoaib Akhtar");
-        bowler.add("Mitchell Johnson");
 
         team.add("Sri Lanka");
         team.add("India");
@@ -67,8 +66,13 @@ public class CPL {
         Controller c = new Controller();
         ArrayList<String> s = c.preProcess(1);
 
-        HashMap<String, ArrayList<String>> patterns = new HashMap<String, ArrayList<String>>();
+        HashMap<String, ArrayList<String>> candidatePatterns = new HashMap<>();
+        candidatePatterns.put("batsman",new ArrayList<String>());
+        candidatePatterns.put("bowler",new ArrayList<String>());
+        candidatePatterns.put("team",new ArrayList<String>());
 
+        ArrayList<String> curList;
+        ArrayList<String> incomingList;
         Iterator it = instances.entrySet().iterator();
 
         while (it.hasNext()) {
@@ -77,9 +81,20 @@ public class CPL {
             ArrayList<String> instancesInCategory = pair.getValue();
             ArrayList<String> instancesInSentences = new ArrayList<>();
             for (String ins : instancesInCategory) {
+//                get instance first/second name
+                String[] parts = ins.split(" ");
+                String fname = "";
+                String lname = "";
+                if (parts.length > 1) {
+                    fname = parts[0];
+                    lname = parts[1];
+                } else {
+                    fname = lname = parts[0];
+                }
+
                 for (String sentence : s) {
                     if (sentence != null) {
-                        if (sentence.contains(ins)) {
+                        if (sentence.contains(fname) || sentence.contains(lname)) {
                             instancesInSentences.add(sentence.trim());
                         }
                     } else {
@@ -87,14 +102,25 @@ public class CPL {
                     }
                 }
                 //extract patterns
-                extractFollowingPattern(ins, instancesInSentences);
+                curList = candidatePatterns.get(category);
+                incomingList = extractFollowingPattern(ins,fname,lname,instancesInSentences);
+
+                if(incomingList.size()!=0) {
+                    for (int i = 0; i < incomingList.size(); i++) {
+                        curList.add(incomingList.get(i));
+                    }
+                    candidatePatterns.put(category,curList);
+                }
             }
         }
+        System.out.println(candidatePatterns.get("batsman"));
+        System.out.println(candidatePatterns.get("bowler"));
+        System.out.println(candidatePatterns.get("team"));
     }
 
 
     //    Extract Following pattern
-    public static ArrayList<String> extractFollowingPattern(String instance, ArrayList<String> sentencesList) {
+    public static ArrayList<String> extractFollowingPattern(String ins, String fname, String lname, ArrayList<String> sentencesList) {
 
         ArrayList<String> patternList = new ArrayList<>();
         ArrayList<String[]> taggedArray = new ArrayList<>();
@@ -102,20 +128,12 @@ public class CPL {
         Pattern removeBracketcontent = Pattern.compile("\\((.*)\\)\\s");
         Matcher matcher;
 //        String pa = "(NN.){1,4}\\s(VB.)\\s(DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
-//        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN)\\s(IN|DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
-        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC)\\s(IN|DT|JJ.{0,1}|RB|NN.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN)\\s(IN|DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+//        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC)\\s(IN|DT|JJ.{0,1}|RB|NN.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
         Pattern pat = Pattern.compile(pa);
         Matcher m;
 
         int juncIndex = 0;
-        String instanceFirstName;
-
-//        if instance has more than 1 word eg : Ishant Sharma
-        if (instance.split(" ").length > 1) {
-            instanceFirstName = instance.split(" ")[0];
-        } else {
-            instanceFirstName = instance;
-        }
 
         try {
             for (String s : sentencesList) {
@@ -124,9 +142,10 @@ public class CPL {
                 while (matcher.find()) {
                     s = matcher.replaceAll("");
                 }
-
-                juncIndex = s.indexOf(instance);
-//                System.out.println("#### " + s + " ### " + instance + " ### " + juncIndex);
+                if (s.contains(fname))
+                    juncIndex = s.indexOf(fname);
+                else
+                    juncIndex = s.indexOf(lname);
                 String followingSub;
 
                 if (juncIndex != -1) {
@@ -165,27 +184,29 @@ public class CPL {
             int len = posLen.split(" ").length;
 
             String[] sentW = s.split(" ");
+            String patternSentence = "";
             for (int i = 0; i < sentW.length; i++) {
-            try {
-                if (sentW[i].equals(instanceFirstName)) {
-//                    System.out.println("### "+s+" ### "+instance+" ### "+len);
-                    int cur = i;
-                    while (i <= cur + len) {
-                        System.out.print(sentW[i] + " ");
-                        i++;
+                try {
+                    if (sentW[i].equals(fname) || sentW[i].equals(lname)) {
+                        int cur = i;
+                        while (i <= cur + len) {
+                            patternSentence += sentW[i] + " ";
+                            i++;
+                        }
+//                    Insert patternSentence in the pattern list
+                        patternSentence = patternSentence.trim();
+                        if (patternSentence.split(" ").length > ins.split(" ").length) {
+                            patternList.add(patternSentence);
+                        }
+                        break;
                     }
-                    System.out.println("###"+s+"###"+instance);
-                    break;
+                } catch (ArrayIndexOutOfBoundsException e) {
+//                    System.out.println("### " + s + " ### " + fname + " " + lname + " ### " + len);
                 }
             }
-            catch(ArrayIndexOutOfBoundsException e) {
-                System.out.println("### "+s+" ### "+instance+" ### "+len);
-            }
-            }
-
         }
-
-        return null;
+//        System.out.println(patternList);
+        return patternList;
     }
 }
 

@@ -23,23 +23,27 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CPL.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="CPL.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/macaws/cpl/CPL.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1241" max-vertical-offset="3145">
-              <caret line="105" column="117" selection-start-line="105" selection-start-column="117" selection-end-line="105" selection-end-column="117" />
+            <state vertical-scroll-proportion="0.46596858" vertical-offset="1624" max-vertical-offset="3791">
+              <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
               <folding>
-                <element signature="e#2293#2320#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1389#1397#0" expanded="true" />
+                <element signature="e#1449#1457#0" expanded="true" />
+                <element signature="e#1507#1515#0" expanded="true" />
+                <element signature="e#1954#1973#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="itr_1.txt" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="itr_1.txt" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/rawTexts/itr_1.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334" vertical-offset="8766" max-vertical-offset="85510">
-              <caret line="522" column="34" selection-start-line="522" selection-start-column="0" selection-end-line="522" selection-end-column="34" />
+            <state vertical-scroll-proportion="-2.4363637" vertical-offset="18447" max-vertical-offset="85527">
+              <caret line="1093" column="594" selection-start-line="1093" selection-start-column="519" selection-end-line="1093" selection-end-column="594" />
               <folding />
             </state>
           </provider>
@@ -51,12 +55,12 @@
       <file leaf-file-name="Test.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/macaws/ke/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.607143" vertical-offset="1328" max-vertical-offset="2805">
-              <caret line="89" column="117" selection-start-line="89" selection-start-column="8" selection-end-line="89" selection-end-column="117" />
+            <state vertical-scroll-proportion="-20.607143" vertical-offset="1242" max-vertical-offset="3009">
+              <caret line="107" column="45" selection-start-line="107" selection-start-column="45" selection-end-line="107" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3818#3826#0" expanded="true" />
-                <element signature="e#4170#4185#0" expanded="true" />
+                <element signature="e#3936#3944#0" expanded="true" />
+                <element signature="e#4288#4303#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -66,7 +70,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/org/macaws/ke/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="1496" max-vertical-offset="2176">
-              <caret line="108" column="41" selection-start-line="108" selection-start-column="41" selection-end-line="108" selection-end-column="41" />
+              <caret line="113" column="0" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -100,13 +104,13 @@
         <option value="$PROJECT_DIR$/src/main/resources/Eval_2.txt" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/CorpusAppender.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/resources/rawTexts/itr_1.txt" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/WebCrawlController.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/MyCrawler.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/MainController.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/CricketClassifier.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/Client.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/Controller.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/rawTexts/itr_1.txt" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/ke/Test.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/macaws/cpl/CPL.java" />
       </list>
@@ -1049,16 +1053,16 @@
       <workItem from="1445645881181" duration="608000" />
       <workItem from="1445938027009" duration="20847000" />
       <workItem from="1447220837813" duration="17697000" />
-      <workItem from="1447406887370" duration="21064000" />
+      <workItem from="1447406887370" duration="26486000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="213484000" />
+    <option name="totallyTimeSpent" value="218906000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
@@ -1080,7 +1084,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22239032" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3137255" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30882353" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1137,7 +1141,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/macaws/cpl/CPL.java</url>
-          <line>181</line>
+          <line>203</line>
           <properties />
         </line-breakpoint>
       </breakpoints>
@@ -1500,43 +1504,47 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/macaws/ke/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1556" max-vertical-offset="2176">
-          <caret line="108" column="41" selection-start-line="108" selection-start-column="41" selection-end-line="108" selection-end-column="41" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1496" max-vertical-offset="2176">
+          <caret line="113" column="0" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/rawTexts/itr_1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.4363637" vertical-offset="18447" max-vertical-offset="85527">
+          <caret line="1093" column="594" selection-start-line="1093" selection-start-column="519" selection-end-line="1093" selection-end-column="594" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/macaws/ke/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.607143" vertical-offset="1328" max-vertical-offset="2805">
-          <caret line="89" column="117" selection-start-line="89" selection-start-column="8" selection-end-line="89" selection-end-column="117" />
+        <state vertical-scroll-proportion="-20.607143" vertical-offset="1242" max-vertical-offset="3009">
+          <caret line="107" column="45" selection-start-line="107" selection-start-column="45" selection-end-line="107" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3818#3826#0" expanded="true" />
-            <element signature="e#4170#4185#0" expanded="true" />
+            <element signature="e#3936#3944#0" expanded="true" />
+            <element signature="e#4288#4303#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/macaws/cpl/CPL.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1241" max-vertical-offset="3145">
-          <caret line="105" column="117" selection-start-line="105" selection-start-column="117" selection-end-line="105" selection-end-column="117" />
+        <state vertical-scroll-proportion="0.46596858" vertical-offset="1624" max-vertical-offset="3791">
+          <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
           <folding>
-            <element signature="e#2293#2320#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1389#1397#0" expanded="true" />
+            <element signature="e#1449#1457#0" expanded="true" />
+            <element signature="e#1507#1515#0" expanded="true" />
+            <element signature="e#1954#1973#0" expanded="true" />
           </folding>
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/rawTexts/itr_1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="8766" max-vertical-offset="85510">
-          <caret line="522" column="34" selection-start-line="522" selection-start-column="0" selection-end-line="522" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
       </provider>
     </entry>
   </component>

@@ -8,6 +8,7 @@ import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
+import org.apache.poi.hssf.record.formula.functions.Match;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ public class Test {
 //        System.out.println(s1);
 //        System.out.println(s1.replaceAll("(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)","$1$2$3$5$6"));
 
-        String sample = "Pakistan in 2006\nPakistan in Sydney\nPakistan in 2005\nPakistan and South Africa\nPakistan in 3 matches";
+        String sample = "Mitchell Johnson was the only bowler with more than four Tests heading into\nPakistan in Sydney\nPakistan in 2005\nPakistan and South Africa\nPakistan in 3 matches";
 
 
         String obamaSample[] = new String[] {"Obama is no Lincoln","Obama is a good president","Obama became the first American President","Obama beats McCain","Obama bought airtime","Obama energizes the base","Obama is the only President","Obama is the new Hitler","Obama is half-white","Obama is an impressive person","Obama is an empty suit","Obama is not President","Obama is leading McCain","Obama is not the right candidate","Obama's Inauguration Day","Obama's Iowa campaign","Obama's Inaugural Address","Obama's historic nomination","Obama's foreign policy team","Obama accepts the Democratic nomination","Obama's campaign today","Obama's Republican colleagues","Obama's New Hampshire campaign","Obama's CIA director","Obama's DOJ","Obama's popular vote lead","Obama's running-mate","Obama's presidential leadership","Obama gets the Democratic nomination","Obama beat Hillary","Obama got more delegates","Obama become the next President","Obama becomes the Democratic nominee","Obama came out swinging at","Obama did not win the nomination","Obama didn't win the nomination","Obama conceded the election","Obama entered Harvard Law School","Obama's economic team","Obama's health care plan","Obama's presidency","Obama's tax cut plan","Obama's proposed economic stimulus plan","Obama's the right person","Obama is a uniter","Obama is a gifted politician","Obama is a great President","Obama is a United States Senator","Obama is the presumptive nominee","Obama picked Joe Biden","Obama lost Tennessee","Obama's judicial nominees","Obama's inauguration today","Obama's new nominee","Obama's military credentials","Obama's incoming chief","Obama's inauguration Tuesday","Obama's executive orders"};
@@ -62,7 +63,7 @@ public class Test {
             perfMon.start();
             for (String s : samplearr) {
                 s = s.trim();
-                int juncIndex = s.indexOf("Pakistan");
+                int juncIndex = s.indexOf("Mitchell Johnson");
                 String followingSub = s.substring(juncIndex);
 //                System.out.println(followingSub.trim());
 
@@ -104,7 +105,7 @@ public class Test {
 
             String[] sentW = s.split(" ");
             for (int i = 0; i < sentW.length; i++) {
-                if (sentW[i].equals("Pakistan")) {
+                if (sentW[i].equals("Mitchell")) {
                     int cur = i;
                     while (i <= cur + len) {
                         System.out.print(sentW[i] + " ");
@@ -119,7 +120,7 @@ public class Test {
 
     public static void main(String[] args) {
 
-        test();
+//        test();
 //        String s = "Ishant Sharma (born 2 September 1988) is an Indian cricketer who has represented India in Tests, ODIs and T20Is.";
 //        Pattern p = Pattern.compile("\\((.*)\\)\\s");
 //        Matcher m = p.matcher(s);
@@ -155,5 +156,16 @@ public class Test {
 //            }
 //        }
 //
+        String reptitivermvPattern = "\\b(\\w+)\\s+\\1\\b";
+        String sent = "Kumar SangakkaraSangakkara has scored 38 centuries in Test cricket, more than any other Sri Lankan";
+
+        Pattern p = Pattern.compile(reptitivermvPattern);
+        Matcher m = p.matcher(sent);
+        String s1 = "";
+        while(m.find()){
+            s1+=m.replaceAll("");
+        }
+
+
     }
 }
