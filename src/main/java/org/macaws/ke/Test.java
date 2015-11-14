@@ -97,48 +97,68 @@ public class Test {
         Pattern pat = Pattern.compile(pa);
         Matcher m = null;
         Iterator posVsSentIterator = posVsSent.entrySet().iterator();
-        while(posVsSentIterator.hasNext()){
-            Map.Entry<String,String> pair = (Map.Entry<String, String>) posVsSentIterator.next();
+        while(posVsSentIterator.hasNext()) {
+            Map.Entry<String, String> pair = (Map.Entry<String, String>) posVsSentIterator.next();
             String p = pair.getValue();
             String s = pair.getKey();
             m = pat.matcher(p);
-            while (m.find()){
-                System.out.print("Start index: " + m.start());
-                System.out.print(" End index: " + m.end() + " ");
-                System.out.println(m.group());
-                System.out.println(s);
+            String posLen = "";
+            while (m.find()) {
+                posLen += m.group();
             }
+            int len = posLen.split(" ").length;
 
+            String[] sentW = s.split(" ");
+            for (int i = 0; i < sentW.length; i++) {
+                if (sentW[i].equals("Ishant")) {
+                    int cur = i;
+                    while (i <= cur + len) {
+                        System.out.print(sentW[i] + " ");
+                        i++;
+                    }
+                    System.out.println();
+                }
+
+            }
         }
     }
 
     public static void main(String[] args) {
+
+        String s = "Ishant Sharma (born 2 September 1988) is an Indian cricketer who has represented India in Tests, ODIs and T20Is.";
+        Pattern p = Pattern.compile("\\((.*)\\)\\s");
+        Matcher m = p.matcher(s);
+        String r = "";
+        while(m.find()){
+            r=m.replaceAll("");
+//            System.out.println(m.group());
+        }
+        System.out.println(r);
+
 //        NN.{0,1}\sVB.\s(DT|JJ|RB|\s)*((NN.{0,1}|\s)*|(IN|\s){0,1})
 //        test();
 
-        String pa = "(NN.){1,2}\\sVB.\\s(DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
-        Pattern p = Pattern.compile(pa);
-        Matcher m = p.matcher("NNP VBD DT JJ JJS NNP TO VB CD CD .");
-        String posLen = "";
-        String sent = "Against South Africa in 2013, Ishant Sharma became the fifth quickest Indian to grab 100 ODI wickets.";
-        while (m.find()){
-//            System.out.println("Start index: " + m.start());
-//            System.out.println("End index: " + m.end() + " ");
-            posLen+=m.group();
-        }
-        System.out.println(posLen);
-        int len = posLen.split(" ").length;
-
-        String[] sentW = sent.split(" ");
-        for(int i = 0;i<sentW.length;i++){
-            if(sentW[i].equals("Ishant")){
-                int cur = i;
-                while(i<=cur+len) {
-                    System.out.print(sentW[i]+" ");
-                    i++;
-                }
-            }
-        }
-
+//        String pa = "(NN.){1,2}\\sVB.\\s(DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+//        Pattern p = Pattern.compile(pa);
+//        Matcher m = p.matcher("NNP VBD DT JJ JJS NNP TO VB CD CD .");
+//        String posLen = "";
+//        String sent = "Against South Africa in 2013, Ishant Sharma became the fifth quickest Indian to grab 100 ODI wickets.";
+//        while (m.find()){
+//            posLen+=m.group();
+//        }
+//        System.out.println(posLen);
+//        int len = posLen.split(" ").length;
+//
+//        String[] sentW = sent.split(" ");
+//        for(int i = 0;i<sentW.length;i++){
+//            if(sentW[i].equals("Ishant")){
+//                int cur = i;
+//                while(i<=cur+len) {
+//                    System.out.print(sentW[i]+" ");
+//                    i++;
+//                }
+//            }
+//        }
+//
     }
 }
