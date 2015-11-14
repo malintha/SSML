@@ -41,13 +41,7 @@ public class Test {
 //        System.out.println(s1);
 //        System.out.println(s1.replaceAll("(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)","$1$2$3$5$6"));
 
-        String sample = "Ishant Sharma is an Indian cricketer who has represented India in Tests, ODIs and T20Is.\n" +
-                "Against South Africa in 2013, Ishant Sharma became the fifth quickest Indian to grab 100 ODI wickets.\n" +
-                "On the basis of his strong performance in Australia in 2008, Ishant Sharma was bought for a winning bid of $950,000 by Kolkata Knight Riders in the player auction for the Indian Premier League .\n" +
-                "Varun Aaron , the Jharkhand fast bowler who has replaced Ishant Sharma in India's ODI squad for the England series, said he will not cut back on his pace as his career progresses because he loves bowling fast.\n" +
-                "Indian fast bowlers have a history of dropping their pace dramatically as their careers take off - Irfan Pathan, Munaf Patel and to some extent Ishant Sharma - but Aaron, who regularly clocks over 140kph and impressed for India Emerging Players during the recent tournament in Australia, said he will not go down that road.\"It's\n" +
-                "wolf777 on August 22, 2011, 23:20 GMTFetish of picking only four bowlers in the eleven will leave him overworked and pretty soon he will join Ishant Sharma, Zaheer Khan and others in rehabilitation.\n" +
-                "Ishant Sharma close to that fate himself.";
+        String sample = "Pakistan in 2006\nPakistan in Sydney\nPakistan in 2005\nPakistan and South Africa\nPakistan in 3 matches";
 
 
         String obamaSample[] = new String[] {"Obama is no Lincoln","Obama is a good president","Obama became the first American President","Obama beats McCain","Obama bought airtime","Obama energizes the base","Obama is the only President","Obama is the new Hitler","Obama is half-white","Obama is an impressive person","Obama is an empty suit","Obama is not President","Obama is leading McCain","Obama is not the right candidate","Obama's Inauguration Day","Obama's Iowa campaign","Obama's Inaugural Address","Obama's historic nomination","Obama's foreign policy team","Obama accepts the Democratic nomination","Obama's campaign today","Obama's Republican colleagues","Obama's New Hampshire campaign","Obama's CIA director","Obama's DOJ","Obama's popular vote lead","Obama's running-mate","Obama's presidential leadership","Obama gets the Democratic nomination","Obama beat Hillary","Obama got more delegates","Obama become the next President","Obama becomes the Democratic nominee","Obama came out swinging at","Obama did not win the nomination","Obama didn't win the nomination","Obama conceded the election","Obama entered Harvard Law School","Obama's economic team","Obama's health care plan","Obama's presidency","Obama's tax cut plan","Obama's proposed economic stimulus plan","Obama's the right person","Obama is a uniter","Obama is a gifted politician","Obama is a great President","Obama is a United States Senator","Obama is the presumptive nominee","Obama picked Joe Biden","Obama lost Tennessee","Obama's judicial nominees","Obama's inauguration today","Obama's new nominee","Obama's military credentials","Obama's incoming chief","Obama's inauguration Tuesday","Obama's executive orders"};
@@ -68,7 +62,7 @@ public class Test {
             perfMon.start();
             for (String s : samplearr) {
                 s = s.trim();
-                int juncIndex = s.indexOf("Ishant Sharma");
+                int juncIndex = s.indexOf("Pakistan");
                 String followingSub = s.substring(juncIndex);
 //                System.out.println(followingSub.trim());
 
@@ -87,13 +81,13 @@ public class Test {
                     perfMon.incrementCounter();
                 }
             }
-            perfMon.stopAndPrintFinalResult();
+//            perfMon.stopAndPrintFinalResult();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         //Extract following pattern
-        String pa = "(NN.){1,2}\\sVB.\\s(DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC)\\s(IN|DT|JJ.{0,1}|RB|NN.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
         Pattern pat = Pattern.compile(pa);
         Matcher m = null;
         Iterator posVsSentIterator = posVsSent.entrySet().iterator();
@@ -110,7 +104,7 @@ public class Test {
 
             String[] sentW = s.split(" ");
             for (int i = 0; i < sentW.length; i++) {
-                if (sentW[i].equals("Ishant")) {
+                if (sentW[i].equals("Pakistan")) {
                     int cur = i;
                     while (i <= cur + len) {
                         System.out.print(sentW[i] + " ");
@@ -125,15 +119,16 @@ public class Test {
 
     public static void main(String[] args) {
 
-        String s = "Ishant Sharma (born 2 September 1988) is an Indian cricketer who has represented India in Tests, ODIs and T20Is.";
-        Pattern p = Pattern.compile("\\((.*)\\)\\s");
-        Matcher m = p.matcher(s);
-        String r = "";
-        while(m.find()){
-            r=m.replaceAll("");
-//            System.out.println(m.group());
-        }
-        System.out.println(r);
+        test();
+//        String s = "Ishant Sharma (born 2 September 1988) is an Indian cricketer who has represented India in Tests, ODIs and T20Is.";
+//        Pattern p = Pattern.compile("\\((.*)\\)\\s");
+//        Matcher m = p.matcher(s);
+//        String r = "";
+//        while(m.find()){
+//            r=m.replaceAll("");
+////            System.out.println(m.group());
+//        }
+//        System.out.println(r);
 
 //        NN.{0,1}\sVB.\s(DT|JJ|RB|\s)*((NN.{0,1}|\s)*|(IN|\s){0,1})
 //        test();
