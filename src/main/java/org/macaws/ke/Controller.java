@@ -105,7 +105,7 @@ public class Controller {
     public ArrayList<String> preProcess(int itr) throws FileNotFoundException {
         String[] rawSentences = fixSentences(itr);
         ArrayList<String> finedSentences = new ArrayList<String>();
-        String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\d+\\])*)(\\^*)(\\w*)";
+        String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\.*\\])*)(\\^*)(\\w*)";
         String groupSqrBrackets = "$1$6";
         String removeExtraSpaces = "(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)";
         String addSpaceBetweenSentences = "(.*\\.)(\\w+.*)";
@@ -126,6 +126,18 @@ public class Controller {
                 finedSentences.add(temp1);
         }
     return finedSentences;
+    }
+
+    public String removeCommas(String s){
+        String commaBetweenWords = "(\\w+)(\\s{0,1})(\\,)(\\w+)";
+        String commaBetweenScore = "(.*)(\\d+)(\\,)(\\d+)(.*)";
+        String commaBetweenBowling = ".*\\d+\\,\\d+\\,\\d+\\,\\d+";
+
+        if(s.matches(commaBetweenWords))
+            s = s.replaceAll(commaBetweenWords,"$1$2$4");
+        if(s.matches(commaBetweenScore))
+            s = s.replaceAll(commaBetweenScore,"$1$2$4$5");
+        return s;
     }
 
 }

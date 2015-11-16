@@ -42,7 +42,7 @@ public class Test {
 //        System.out.println(s1);
 //        System.out.println(s1.replaceAll("(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)","$1$2$3$5$6"));
 
-        String sample = "Mitchell Johnson was the only bowler with more than four Tests heading into\nPakistan in Sydney\nPakistan in 2005\nPakistan and South Africa\nPakistan in 3 matches";
+        String sample = "Mahela Jayawardana was bought for a winning bid of $950,000 by Kolkata Knight Riders in the player auction for the Indian Premier League";
 
 
         String obamaSample[] = new String[] {"Obama is no Lincoln","Obama is a good president","Obama became the first American President","Obama beats McCain","Obama bought airtime","Obama energizes the base","Obama is the only President","Obama is the new Hitler","Obama is half-white","Obama is an impressive person","Obama is an empty suit","Obama is not President","Obama is leading McCain","Obama is not the right candidate","Obama's Inauguration Day","Obama's Iowa campaign","Obama's Inaugural Address","Obama's historic nomination","Obama's foreign policy team","Obama accepts the Democratic nomination","Obama's campaign today","Obama's Republican colleagues","Obama's New Hampshire campaign","Obama's CIA director","Obama's DOJ","Obama's popular vote lead","Obama's running-mate","Obama's presidential leadership","Obama gets the Democratic nomination","Obama beat Hillary","Obama got more delegates","Obama become the next President","Obama becomes the Democratic nominee","Obama came out swinging at","Obama did not win the nomination","Obama didn't win the nomination","Obama conceded the election","Obama entered Harvard Law School","Obama's economic team","Obama's health care plan","Obama's presidency","Obama's tax cut plan","Obama's proposed economic stimulus plan","Obama's the right person","Obama is a uniter","Obama is a gifted politician","Obama is a great President","Obama is a United States Senator","Obama is the presumptive nominee","Obama picked Joe Biden","Obama lost Tennessee","Obama's judicial nominees","Obama's inauguration today","Obama's new nominee","Obama's military credentials","Obama's incoming chief","Obama's inauguration Tuesday","Obama's executive orders"};
@@ -63,7 +63,7 @@ public class Test {
             perfMon.start();
             for (String s : samplearr) {
                 s = s.trim();
-                int juncIndex = s.indexOf("Mitchell Johnson");
+                int juncIndex = s.indexOf("Mahela Jayawardana");
                 String followingSub = s.substring(juncIndex);
 //                System.out.println(followingSub.trim());
 
@@ -88,7 +88,7 @@ public class Test {
         }
 
         //Extract following pattern
-        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC)\\s(IN|DT|JJ.{0,1}|RB|NN.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC){1,2}\\s(IN|DT|JJ.{0,1}|RB|VB.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
         Pattern pat = Pattern.compile(pa);
         Matcher m = null;
         Iterator posVsSentIterator = posVsSent.entrySet().iterator();
@@ -100,12 +100,13 @@ public class Test {
             String posLen = "";
             while (m.find()) {
                 posLen += m.group();
+                System.out.print(m.groupCount());
             }
             int len = posLen.split(" ").length;
-
+            System.out.println("\n"+posLen);
             String[] sentW = s.split(" ");
             for (int i = 0; i < sentW.length; i++) {
-                if (sentW[i].equals("Mitchell")) {
+                if (sentW[i].equals("Mahela")) {
                     int cur = i;
                     while (i <= cur + len) {
                         System.out.print(sentW[i] + " ");
@@ -120,7 +121,7 @@ public class Test {
 
     public static void main(String[] args) {
 
-//        test();
+        test();
 //        String s = "Ishant Sharma (born 2 September 1988) is an Indian cricketer who has represented India in Tests, ODIs and T20Is.";
 //        Pattern p = Pattern.compile("\\((.*)\\)\\s");
 //        Matcher m = p.matcher(s);
@@ -156,16 +157,38 @@ public class Test {
 //            }
 //        }
 //
-        String reptitivermvPattern = "\\b(\\w+)\\s+\\1\\b";
-        String sent = "Kumar SangakkaraSangakkara has scored 38 centuries in Test cricket, more than any other Sri Lankan";
 
-        Pattern p = Pattern.compile(reptitivermvPattern);
-        Matcher m = p.matcher(sent);
-        String s1 = "";
-        while(m.find()){
-            s1+=m.replaceAll("");
-        }
+//        String fname = "Kumar";
+//        String lname = "Sangakkara";
+//
+//        String s = "Kumar Chokshananda Sangakkara resigned the captaincy after, Sangakkara has 38";
+//        String p;
+//        if(fname!=lname)
+//            p = fname+".*"+lname;
+//        else
+//            p = fname;
+//
+//        System.out.println(s.replaceAll(p,"xx"));
+//        Pattern p1 = Pattern.compile(p);
+//        Matcher m = p1.matcher(s);
+//        while(m.find()) {
+//            System.out.println(m.group());
+//        }
 
 
+//        System.out.println("Mahela,Sangakkara resigned the captaincy after".matches("(\\w\\s{0,1})+"));
+
+    }
+    public static String removeCommas(String s){
+        String commaBetweenWords = "(\\w\\s{0,1})*(\\,)(\\s{0,1}\\w\\s{0,1})*";
+        String commaBetweenScore = "(.*)(\\d+)(\\,)(\\d+)(.*)";
+        String commaBetweenBowling = ".*\\d+\\,\\d+\\,\\d+\\,\\d+";
+
+        if(s.matches(commaBetweenWords))
+            s = s.replaceAll(",","");
+        System.out.println(s);
+        if(s.matches(commaBetweenScore))
+            s = s.replaceAll(commaBetweenScore,"$1$2$4$5");
+        return s;
     }
 }

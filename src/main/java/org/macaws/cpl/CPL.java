@@ -8,7 +8,6 @@ import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import org.macaws.ke.Controller;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -45,9 +44,12 @@ public class CPL {
         ArrayList<String> team = new ArrayList<String>();
         initialize();
 
+        //getting instances from ontology
+
         batsman.add("Kumar Sangakkara");
         batsman.add("Mahela Jayawardene");
         batsman.add("Sachin Tendulkar");
+        batsman.add("Brendon McCullum");
 
         bowler.add("Ishant Sharma");
         bowler.add("Brett Lee");
@@ -87,8 +89,9 @@ public class CPL {
                 String lname = "";
                 if (parts.length > 1) {
                     fname = parts[0];
-                    lname = parts[1];
-                } else {
+                    lname = parts[parts.length-1];
+                }
+                else {
                     fname = lname = parts[0];
                 }
 
@@ -113,9 +116,23 @@ public class CPL {
                 }
             }
         }
-        System.out.println(candidatePatterns.get("batsman"));
-        System.out.println(candidatePatterns.get("bowler"));
-        System.out.println(candidatePatterns.get("team"));
+        ArrayList<String> ar =  candidatePatterns.get("batsman");
+        for(String s1 : ar)
+            System.out.print(s1 + " || ");
+        System.out.println();
+        ArrayList<String> ar2 =  candidatePatterns.get("bowler");
+        for(String s1 : ar2)
+            System.out.print(s1+" || ");
+        System.out.println();
+        ArrayList<String> ar3 =  candidatePatterns.get("team");
+        for(String s1 : ar3)
+            System.out.print(s1+" || ");
+
+        //store patterns in db
+
+        //retrieve patterns from db
+
+
     }
 
 
@@ -128,7 +145,8 @@ public class CPL {
         Pattern removeBracketcontent = Pattern.compile("\\((.*)\\)\\s");
         Matcher matcher;
 //        String pa = "(NN.){1,4}\\s(VB.)\\s(DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
-        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN)\\s(IN|DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+//        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN)\\s(IN|DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
+        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC)\\s(IN|DT|JJ.{0,1}|RB|NN.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
 //        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN|IN|CC)\\s(IN|DT|JJ.{0,1}|RB|NN.|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
         Pattern pat = Pattern.compile(pa);
         Matcher m;
@@ -195,11 +213,26 @@ public class CPL {
                         }
 //                    Insert patternSentence in the pattern list
                         patternSentence = patternSentence.trim();
-                        if (patternSentence.split(" ").length > ins.split(" ").length) {
+                        String replaceInstancePattern=ins;
+//                        if (patternSentence.split(" ").length > ins.split(" ").length) {
+                        if(fname!=lname) {
+                            if (patternSentence.matches(".*" + fname + ".*" + lname + ".*"))
+                                replaceInstancePattern = fname+".*"+lname;
+                            else if(patternSentence.contains(fname))
+                                replaceInstancePattern = fname;
+                            else if(patternSentence.contains(lname))
+                                replaceInstancePattern = lname;
+                        }
+                        else{
+                            replaceInstancePattern = fname;
+                        }
+                            patternSentence = patternSentence.replaceAll(replaceInstancePattern,"argument");
+
+//                        if(patternSentence.replaceAll(",","").matches("(\\w+\\s{0,1})+"))
                             patternList.add(patternSentence);
                         }
                         break;
-                    }
+//                    }
                 } catch (ArrayIndexOutOfBoundsException e) {
 //                    System.out.println("### " + s + " ### " + fname + " " + lname + " ### " + len);
                 }
