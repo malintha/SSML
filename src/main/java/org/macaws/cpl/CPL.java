@@ -1,5 +1,6 @@
 package org.macaws.cpl;
 
+import gate.creole.gazetteer.DefaultGazetteer;
 import opennlp.tools.cmdline.PerformanceMonitor;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
@@ -11,6 +12,7 @@ import org.macaws.ke.Controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,21 +30,55 @@ public class CPL {
     static POSModel model = null;
     static ObjectStream<String> lineStream;
     static POSTaggerME tagger;
+    static Connection con;
 
-    public static void initialize() throws IOException {
+    public static void main(String[] args) throws Exception {
+        CPL cpl = new CPL();
+        cpl.initialize();
+        cpl.runCPL();
+//        cpl.addCandicatePattern(con,"Pattern","Category");
+    }
+
+    /**
+     * Initialize the variables for CPL algorithm
+     * @throws Exception
+     */
+
+    public void initialize() throws Exception {
         classLoader = Thread.currentThread().getContextClassLoader();
         modelIn = classLoader.getResourceAsStream("openNLP/en-pos-maxent.bin");
         perfMon = new PerformanceMonitor(System.err, "sent");
         model = new POSModel(modelIn);
         tagger = new POSTaggerME(model);
+        con = DBCon.getInstance();
     }
 
+    /**
+     * Adding patterns to the database
+     * @param con
+     * @param Pattern
+     * @param Category
+     * @return
+     */
+    public synchronized boolean addCandicatePattern(Connection con, String Pattern, String Category){
+        int rst =0;
+        try {
+            rst = DBHandler.setData(con, "insert into candidate_instances(Category,Pattern) values ('"+Category+"','"+Pattern+"')");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return rst>0;
+    }
 
-    public static void main(String[] args) throws IOException {
+    /**
+     * CPL algorithm
+     * @throws Exception
+     */
+    public void runCPL() throws Exception {
         ArrayList<String> batsman = new ArrayList<String>();
         ArrayList<String> bowler = new ArrayList<String>();
         ArrayList<String> team = new ArrayList<String>();
-        initialize();
 
         //getting instances from ontology
 
@@ -116,25 +152,25 @@ public class CPL {
                 }
             }
         }
-        ArrayList<String> ar =  candidatePatterns.get("batsman");
-        for(String s1 : ar)
-            System.out.print(s1 + " || ");
-        System.out.println();
-        ArrayList<String> ar2 =  candidatePatterns.get("bowler");
-        for(String s1 : ar2)
-            System.out.print(s1+" || ");
-        System.out.println();
-        ArrayList<String> ar3 =  candidatePatterns.get("team");
-        for(String s1 : ar3)
-            System.out.print(s1+" || ");
 
         //store patterns in db
+        boolean rst = false;
 
-        //retrieve patterns from db
+        Iterator candidatePatIterator = candidatePatterns.entrySet().iterator();
+        while(candidatePatIterator.hasNext()){
+            Map.Entry<String, ArrayList> pair = (Map.Entry<String, ArrayList>) candidatePatIterator.next();
+            ArrayList<String> candidatePatternList = pair.getValue();
+            String category = pair.getKey();
 
-
+            for(String p : candidatePatternList){
+                rst = this.addCandicatePattern(con, p, category);
+                if(rst!=true){
+                    throw new Exception("Patterns couldn't be inserted");
+                }
+//                System.out.println(p+" || "+category);
+            }
+        }
     }
-
 
     //    Extract Following pattern
     public static ArrayList<String> extractFollowingPattern(String ins, String fname, String lname, ArrayList<String> sentencesList) {
