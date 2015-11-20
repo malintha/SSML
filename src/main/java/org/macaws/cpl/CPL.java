@@ -1,6 +1,5 @@
 package org.macaws.cpl;
 
-import gate.creole.gazetteer.DefaultGazetteer;
 import opennlp.tools.cmdline.PerformanceMonitor;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +36,17 @@ public class CPL {
         CPL cpl = new CPL();
         cpl.initialize();
         cpl.runCPL();
-//        cpl.addCandicatePattern(con,"Pattern","Category");
+
+//        PreparedStatement ps = con.prepareStatement("INSERT INTO candidate_instances(Category,Pattern) VALUES (?,?)");
+//        ps.setString(1,"Bowler");
+//        ps.setString(2,"Pattern");
+//
+//        for(int i=0;i<200;i++){
+//            int affectedrows = ps.executeUpdate();
+//            System.out.println(affectedrows);
+//        }
+
+
     }
 
     /**
@@ -60,16 +70,16 @@ public class CPL {
      * @param Category
      * @return
      */
-    public synchronized boolean addCandicatePattern(Connection con, String Pattern, String Category){
-        int rst =0;
-        try {
-            rst = DBHandler.setData(con, "insert into candidate_instances(Category,Pattern) values ('"+Category+"','"+Pattern+"')");
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        return rst>0;
-    }
+//    public synchronized boolean addCandicatePattern(Connection con, String Pattern, String Category){
+//        int rst =0;
+//        try {
+//            rst = DBHandler.setData(con, "insert into candidate_instances(Category,Pattern) values ('" + Category + "','" + Pattern + "')");
+//        }
+//        catch(Exception e) {
+//            e.printStackTrace();
+//        }
+//        return rst>0;
+//    }
 
     /**
      * CPL algorithm
@@ -154,20 +164,18 @@ public class CPL {
         }
 
         //store patterns in db
-        boolean rst = false;
-
         Iterator candidatePatIterator = candidatePatterns.entrySet().iterator();
+        PreparedStatement ps = con.prepareStatement("INSERT INTO candidate_patterns(Category,Pattern) VALUES (?,?)");
+
         while(candidatePatIterator.hasNext()){
             Map.Entry<String, ArrayList> pair = (Map.Entry<String, ArrayList>) candidatePatIterator.next();
             ArrayList<String> candidatePatternList = pair.getValue();
             String category = pair.getKey();
 
             for(String p : candidatePatternList){
-                rst = this.addCandicatePattern(con, p, category);
-                if(rst!=true){
-                    throw new Exception("Patterns couldn't be inserted");
-                }
-//                System.out.println(p+" || "+category);
+                ps.setString(1,category);
+                ps.setString(2,p);
+                ps.executeUpdate();
             }
         }
     }

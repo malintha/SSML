@@ -5,8 +5,9 @@ import java.util.ArrayList;
 
 class DBHandler{
 	 static ArrayList<String> getQueue=new ArrayList<String>();
-        static ArrayList<String> setQueue=new ArrayList<String>();
-	public synchronized static int setData(Connection con,String query) throws Exception{
+     static ArrayList<String> setQueue=new ArrayList<String>();
+
+    public static int setData(Connection con,String query) throws Exception{
 		Statement stm=con.createStatement();
 		int res = 0;
           //      System.out.println(setQueue.size());
