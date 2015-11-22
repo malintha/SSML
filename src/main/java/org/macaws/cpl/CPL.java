@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -172,11 +174,11 @@ public class CPL {
 
     }
 
-    public LinkedHashMap<String,String> extractInstancesFromPromotedPatterns() throws SQLException {
+    public LinkedHashMap<String,String> extractInstancesFromPromotedPatterns() throws SQLException, InterruptedException {
 
         //load promoted patterns
         PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");
-        final ArrayList<ContextualPattern> patternArrayList = new ArrayList<>();
+        ArrayList<ContextualPattern> patternArrayList = new ArrayList<>();
 
         for(int i=this.currentIteration-1;i>=0;i--) {
             psRetrieve.setInt(1,i);
@@ -186,35 +188,37 @@ public class CPL {
             }
         }
 
+        for(int i = 0;i<patternArrayList.size();i++){
+            System.out.print(i+" "+patternArrayList.get(i).getCategory() + " | " + patternArrayList.get(i).getText());
+            System.out.println();
+        }
+        System.out.println();
         //create 5 threads, share patterns between them
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
         final int promotedPatternsLength = patternArrayList.size();
 
 
-        for (int i = 1; i <= 5; i++) {
-            multiplier = i;
-            threadPool.submit(new Runnable() {
-                int k=0;
-                public void run() {
-                    while(k<(promotedPatternsLength/5)*multiplier){
-                        ContextualPattern c = patternArrayList.get(k);
-                        String category = c.getCategory();
-                        String text = c.getText();
-                        System.out.println(category+" | "+text+" | thread");
-                        k++;
-                    }
+        for (int i = 0; i < 5; i++) {
+            threadPool.submit(new PatternMatchRunnable(i,patternArrayList));
+//            threadPool.submit(new Runnable() {
+//                int k=0;
+//                public void run() {
+//                    while(k<(promotedPatternsLength/5)*multiplier){
+//                        ContextualPattern c = patternArrayList.get(k);
+//                        String category = c.getCategory();
+//                        String text = c.getText();
+//                        System.out.println(category+" | "+text);
+//                        k++;
+//                    }
                 }
-
-            });
-        }
 
 
         //for each patterns, search for occurrences
-
+        threadPool.shutdown();
+        // wait for the threads to finish if necessary
+        threadPool.awaitTermination(10000, TimeUnit.MILLISECONDS);
         return null;
     }
-
-
 
 
 
@@ -342,6 +346,27 @@ public class CPL {
     }
 
 
+}
+
+class PatternMatchRunnable implements Runnable{
+
+    int threadId;
+    ArrayList<ContextualPattern> promotedPatternList;
+    int length;
+    public PatternMatchRunnable(int threadId, ArrayList<ContextualPattern> promotedpatternList){
+        this.threadId = threadId;
+        this.promotedPatternList = promotedpatternList;
+        this.length = promotedpatternList.size();
+    }
+
+    @Override
+    public void run() {
+        int k=0;
+        for(int i=(length/5)*threadId;i<(length/5)*(threadId+1);i++){
+            System.out.println(promotedPatternList.get(i).getText()+" | "+promotedPatternList.get(i).getCategory()+" | "+threadId);
+
+        }
+    }
 }
 
 
