@@ -34,16 +34,18 @@ public class JenaHandler {
 	private static OntModel ontModel = null;
 
 	private final String NS = "http://myonth.com/cricket/ontology#";
-	private static final String FILE_URL = "cricket.owl";
+	private static final String FILE_URL = "ontology/cricket.owl";
 	private final String ABBREVIATED_SYNTAX = "RDF/XML-ABBREV";
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
 
 	protected JenaHandler() {
 		if (ontModel == null) {
-			InputStream in = FileManager.get().open(FILE_URL);
+            InputStream in = classLoader.getResourceAsStream(FILE_URL);
+//			InputStream in = FileManager.get().open(FILE_URL);
 			ontModel = ModelFactory.createOntologyModel();
 			ontModel.read(in, ABBREVIATED_SYNTAX);
 		}
-
 	}
 	
 	public static OntModel getOntModel(){

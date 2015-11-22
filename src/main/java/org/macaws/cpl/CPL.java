@@ -13,9 +13,14 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Created by Malintha on 8/3/2015.
@@ -28,11 +33,15 @@ public class CPL {
     static ObjectStream<String> lineStream;
     static POSTaggerME tagger;
     static Connection con;
+    static int currentIteration;
+    ArrayList<String> s;
+    static int multiplier=1;
 
     public static void main(String[] args) throws Exception {
         CPL cpl = new CPL();
-        cpl.initialize();
-        cpl.runCPL();
+        cpl.initialize(1);
+//        cpl.runCPL();
+        cpl.extractInstancesFromPromotedPatterns();
     }
 
     /**
@@ -40,13 +49,15 @@ public class CPL {
      * @throws Exception
      */
 
-    public void initialize() throws Exception {
+    public void initialize(int currentIteration) throws Exception {
         classLoader = Thread.currentThread().getContextClassLoader();
         modelIn = classLoader.getResourceAsStream("openNLP/en-pos-maxent.bin");
         perfMon = new PerformanceMonitor(System.err, "sent");
         model = new POSModel(modelIn);
         tagger = new POSTaggerME(model);
         con = DBCon.getInstance();
+        this.currentIteration = currentIteration;
+        s = new ArrayList<String>();
     }
 
     /**
@@ -88,7 +99,7 @@ public class CPL {
         instances.put("team", team);
 
         Controller c = new Controller();
-        ArrayList<String> s = c.preProcess(1);
+        s = c.preProcess(1);
 
         HashMap<String, ArrayList<String>> candidatePatterns = new HashMap<>();
         candidatePatterns.put("batsman",new ArrayList<String>());
@@ -154,10 +165,73 @@ public class CPL {
                 ps.executeUpdate();
             }
         }
+
+        //promote patterns
+
+        //extract instances from promoted patterns
+
     }
 
+    public LinkedHashMap<String,String> extractInstancesFromPromotedPatterns() throws SQLException {
+
+        //load promoted patterns
+        PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");
+        final ArrayList<ContextualPattern> patternArrayList = new ArrayList<>();
+
+        for(int i=this.currentIteration-1;i>=0;i--) {
+            psRetrieve.setInt(1,i);
+            ResultSet rst = psRetrieve.executeQuery();
+            while (rst.next()) {
+                patternArrayList.add(new ContextualPattern(rst.getString("Category"),rst.getString("Pattern")));
+            }
+        }
+
+        //create 5 threads, share patterns between them
+        ExecutorService threadPool = Executors.newFixedThreadPool(10);
+        final int promotedPatternsLength = patternArrayList.size();
+
+
+        for (int i = 1; i <= 5; i++) {
+            multiplier = i;
+            threadPool.submit(new Runnable() {
+                int k=0;
+                public void run() {
+                    while(k<(promotedPatternsLength/5)*multiplier){
+                        ContextualPattern c = patternArrayList.get(k);
+                        String category = c.getCategory();
+                        String text = c.getText();
+                        System.out.println(category+" | "+text+" | thread");
+                        k++;
+                    }
+                }
+
+            });
+        }
+
+
+        //for each patterns, search for occurrences
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //    Extract Following pattern
-    public static ArrayList<String> extractFollowingPattern(String ins, String fname, String lname, ArrayList<String> sentencesList) {
+    public ArrayList<String> extractFollowingPattern(String ins, String fname, String lname, ArrayList<String> sentencesList) {
 
         ArrayList<String> patternList = new ArrayList<>();
         ArrayList<String[]> taggedArray = new ArrayList<>();
@@ -188,21 +262,7 @@ public class CPL {
 
                 if (juncIndex != -1) {
                     followingSub = s.substring(juncIndex);
-                    lineStream = new PlainTextByLineStream(new StringReader(followingSub.trim()));
-
-                    String line;
-                    while ((line = lineStream.read()) != null) {
-                        String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
-                        String[] tags = tagger.tag(whitespaceTokenizerLine);
-                        taggedArray.add(tags);
-                        String tagSentence = "";
-                        for (String t : tags) {
-                            tagSentence += t + " ";
-                        }
-//                    System.out.println(followingSub + "\n" + tagSentence + "\n");
-                        posVsSent.put(followingSub, tagSentence.trim());
-//                    perfMon.incrementCounter();
-                    }
+                    posVsSent.put(followingSub, this.getPosSentence(followingSub));
                 }
             }
         } catch (IOException e) {
@@ -261,6 +321,27 @@ public class CPL {
 //        System.out.println(patternList);
         return patternList;
     }
+
+    //extract category instances
+
+    //get pos sentence
+    public String getPosSentence(String sentence) throws IOException {
+
+        lineStream = new PlainTextByLineStream(new StringReader(sentence));
+        String line;
+        String tagSentence = "";
+        while ((line = lineStream.read()) != null) {
+            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
+            String[] tags = tagger.tag(whitespaceTokenizerLine);
+
+            for (String t : tags) {
+                tagSentence += t + " ";
+            }
+        }
+        return tagSentence.trim();
+    }
+
+
 }
 
 
