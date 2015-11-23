@@ -10,6 +10,9 @@ import opennlp.tools.sentdetect.SentenceModel;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Malintha on 10/13/2015.
@@ -75,13 +78,27 @@ public class Controller {
         InputStream modelIn = null;
         classLoader = Thread.currentThread().getContextClassLoader();
         try{
-        modelIn = classLoader.getResourceAsStream("openNLP/en-sent.bin");
+            modelIn = classLoader.getResourceAsStream("openNLP/en-sent.bin");
 
             BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream("rawTexts/itr_"+itr+".txt")));
-            String line;
+
+
+            //create 10 threads to process each sentence
+//            ExecutorService threadPool = Executors.newFixedThreadPool(10);
+//            for(int i=0;i<10;i++){
+//                threadPool.submit(new preprocessCorpusRunnable());
+//            }
+
             String text = "";
-            while((line=br.readLine())!=null)
-                text+=line;
+            String line;
+
+            while((line = br.readLine())!=null) {
+                line = line.replaceAll("\\[.*\\]","").replaceAll("\\(.*\\)","");
+                if(!this.doesContainStopWords(line))
+                    System.out.println("##### "+line);
+                else
+                    text+=line;
+            }
 
             SentenceModel model = new SentenceModel(modelIn);
             SentenceDetectorME sentenceDetector = new SentenceDetectorME(model);
@@ -102,6 +119,7 @@ public class Controller {
         }
     }
 
+
     public ArrayList<String> preProcess(int itr) throws FileNotFoundException {
         String[] rawSentences = fixSentences(itr);
         ArrayList<String> finedSentences = new ArrayList<String>();
@@ -113,7 +131,7 @@ public class Controller {
         String temp,temp1,temp2,temp3;
 
 
-        for(int i=0;i<1000;i++) {
+        for(int i=0;i<rawSentences.length;i++) {
             temp = rawSentences[i].replaceAll(removeSqrBrackets, groupSqrBrackets);
             temp1 = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
             if(temp1.matches(addSpaceBetweenSentences)){
@@ -140,4 +158,38 @@ public class Controller {
         return s;
     }
 
+    public static void main(String[] args) throws FileNotFoundException {
+        Controller c = new Controller();
+//        c.fixSentences(0);
+        String[] al = c.fixSentences(1);
+
+//        String hin = "On 18 August 2012, Laxman announced his retirement from international cricket";
+//        System.out.println(c.isContainsStopWords(hin));
+
+        for(String s:al)
+            System.out.println(s);
+//            if(!c.doesContainStopWords(s))
+//            String s1 = s.replaceAll("\\(.*\\)","");
+//                System.out.println(s1.replaceAll("\\[.*\\]",""));
+
+
+        }
+
+    public boolean doesContainStopWords(String sentence){
+        String[] stopWordsList = {"a", "an", "and", "are", "as", "at", "be", "but", "by",
+                "for", "if", "in", "into", "is", "it",
+                "no", "not", "of", "on", "or", "such",
+                "that", "the", "their", "then", "there", "these",
+                "they", "this", "to", "was", "will", "with"};
+        String[] sentenceWords = sentence.split(" ");
+        for (int j=0;j<sentenceWords.length;j++)
+            for(int i=0;i<stopWordsList.length;i++){
+                if(sentenceWords[j].equals(stopWordsList[i]))
+                    return true;
+            }
+
+        return false;
+    }
+
 }
+

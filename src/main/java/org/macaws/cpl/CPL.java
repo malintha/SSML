@@ -8,6 +8,7 @@ import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import org.macaws.ke.Controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -36,8 +37,7 @@ public class CPL {
     static POSTaggerME tagger;
     static Connection con;
     static int currentIteration;
-    ArrayList<String> s;
-    static int multiplier=1;
+    static ArrayList<String> s;
 
     public static void main(String[] args) throws Exception {
 
@@ -49,6 +49,7 @@ public class CPL {
 
     /**
      * Initialize the variables for CPL algorithm
+     *
      * @throws Exception
      */
 
@@ -63,16 +64,10 @@ public class CPL {
         s = new ArrayList<String>();
     }
 
-    /**
-     * Adding patterns to the database
-     * @param con
-     * @param Pattern
-     * @param Category
-     * @return
-     */
 
     /**
      * CPL algorithm
+     *
      * @throws Exception
      */
     public void runCPL() throws Exception {
@@ -105,9 +100,9 @@ public class CPL {
         s = c.preProcess(1);
 
         HashMap<String, ArrayList<String>> candidatePatterns = new HashMap<>();
-        candidatePatterns.put("batsman",new ArrayList<String>());
-        candidatePatterns.put("bowler",new ArrayList<String>());
-        candidatePatterns.put("team",new ArrayList<String>());
+        candidatePatterns.put("batsman", new ArrayList<String>());
+        candidatePatterns.put("bowler", new ArrayList<String>());
+        candidatePatterns.put("team", new ArrayList<String>());
 
         ArrayList<String> curList;
         ArrayList<String> incomingList;
@@ -125,9 +120,8 @@ public class CPL {
                 String lname = "";
                 if (parts.length > 1) {
                     fname = parts[0];
-                    lname = parts[parts.length-1];
-                }
-                else {
+                    lname = parts[parts.length - 1];
+                } else {
                     fname = lname = parts[0];
                 }
 
@@ -142,13 +136,13 @@ public class CPL {
                 }
                 //extract patterns
                 curList = candidatePatterns.get(category);
-                incomingList = extractFollowingPattern(ins,fname,lname,instancesInSentences);
+                incomingList = extractFollowingPattern(ins, fname, lname, instancesInSentences);
 
-                if(incomingList.size()!=0) {
+                if (incomingList.size() != 0) {
                     for (int i = 0; i < incomingList.size(); i++) {
                         curList.add(incomingList.get(i));
                     }
-                    candidatePatterns.put(category,curList);
+                    candidatePatterns.put(category, curList);
                 }
             }
         }
@@ -157,14 +151,14 @@ public class CPL {
         Iterator candidatePatIterator = candidatePatterns.entrySet().iterator();
         PreparedStatement ps = con.prepareStatement("INSERT INTO candidate_patterns(Category,Pattern) VALUES (?,?)");
 
-        while(candidatePatIterator.hasNext()){
+        while (candidatePatIterator.hasNext()) {
             Map.Entry<String, ArrayList> pair = (Map.Entry<String, ArrayList>) candidatePatIterator.next();
             ArrayList<String> candidatePatternList = pair.getValue();
             String category = pair.getKey();
 
-            for(String p : candidatePatternList){
-                ps.setString(1,category);
-                ps.setString(2,p);
+            for (String p : candidatePatternList) {
+                ps.setString(1, category);
+                ps.setString(2, p);
                 ps.executeUpdate();
             }
         }
@@ -175,29 +169,25 @@ public class CPL {
 
     }
 
-    public LinkedHashMap<String,String> extractInstancesFromPromotedPatterns() throws SQLException, InterruptedException {
+    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws SQLException, InterruptedException, FileNotFoundException {
 
         //load promoted patterns
         PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");
         ArrayList<ContextualPattern> patternArrayList = new ArrayList<>();
 
-        for(int i=this.currentIteration-1;i>=0;i--) {
-            psRetrieve.setInt(1,i);
+        for (int i = this.currentIteration - 1; i >= 0; i--) {
+            psRetrieve.setInt(1, i);
             ResultSet rst = psRetrieve.executeQuery();
             while (rst.next()) {
-                patternArrayList.add(new ContextualPattern(rst.getString("Category"),rst.getString("Pattern")));
+                patternArrayList.add(new ContextualPattern(rst.getString("Category"), rst.getString("Pattern")));
             }
         }
 
         //create 5 threads, share patterns between them
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
-        final int promotedPatternsLength = patternArrayList.size();
-
-
         for (int i = 0; i < 5; i++) {
-            threadPool.submit(new PatternMatchRunnable(i,patternArrayList));
-                }
-
+            threadPool.submit(new PatternMatchRunnable(i, patternArrayList, 2));
+        }
 
         //for each patterns, search for occurrences
         threadPool.shutdown();
@@ -205,19 +195,6 @@ public class CPL {
         threadPool.awaitTermination(10000, TimeUnit.MILLISECONDS);
         return null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //    Extract Following pattern
@@ -283,25 +260,24 @@ public class CPL {
                         }
 //                    Insert patternSentence in the pattern list
                         patternSentence = patternSentence.trim();
-                        String replaceInstancePattern=ins;
+                        String replaceInstancePattern = ins;
 //                        if (patternSentence.split(" ").length > ins.split(" ").length) {
-                        if(fname!=lname) {
+                        if (fname != lname) {
                             if (patternSentence.matches(".*" + fname + ".*" + lname + ".*"))
-                                replaceInstancePattern = fname+".*"+lname;
-                            else if(patternSentence.contains(fname))
+                                replaceInstancePattern = fname + ".*" + lname;
+                            else if (patternSentence.contains(fname))
                                 replaceInstancePattern = fname;
-                            else if(patternSentence.contains(lname))
+                            else if (patternSentence.contains(lname))
                                 replaceInstancePattern = lname;
-                        }
-                        else{
+                        } else {
                             replaceInstancePattern = fname;
                         }
-                            patternSentence = patternSentence.replaceAll(replaceInstancePattern,"argument");
+                        patternSentence = patternSentence.replaceAll(replaceInstancePattern, "argument");
 
 //                        if(patternSentence.replaceAll(",","").matches("(\\w+\\s{0,1})+"))
-                            patternList.add(patternSentence);
-                        }
-                        break;
+                        patternList.add(patternSentence);
+                    }
+                    break;
 //                    }
                 } catch (ArrayIndexOutOfBoundsException e) {
 //                    System.out.println("### " + s + " ### " + fname + " " + lname + " ### " + len);
@@ -330,32 +306,9 @@ public class CPL {
         }
         return tagSentence.trim();
     }
-
-
 }
 
-class PatternMatchRunnable implements Runnable{
 
-    int threadId;
-    ArrayList<ContextualPattern> promotedPatternList;
-    int length;
-    int upperBound;
-    public PatternMatchRunnable(int threadId, ArrayList<ContextualPattern> promotedpatternList){
-        this.threadId = threadId;
-        this.promotedPatternList = promotedpatternList;
-        this.length = promotedpatternList.size();
-        upperBound = threadId==4?((length/5)*(threadId+1)+(length%5)):((length/5)*(threadId+1));
-    }
-
-    @Override
-    public void run() {
-
-        for(int i=(length/5)*threadId;i<upperBound;i++){
-            System.out.println(promotedPatternList.get(i).getText()+" | "+promotedPatternList.get(i).getCategory()+" | "+threadId);
-
-        }
-    }
-}
 
 
 
