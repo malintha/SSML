@@ -135,7 +135,7 @@ public class Controller {
 
         for(String sentence:rawSentences){
             String tempSentence = null;
-
+            String almostFinedsentence = null;
             if(!this.doesContaincopyrightWords(sentence)){
                 tempSentence = sentence;
             }
@@ -152,8 +152,10 @@ public class Controller {
                         if(!tempSentence.matches(".*(.\\s){2}.*")){
                             if(!(tempSentence.matches(".*([01]?[0-9]|2[0-3]):[0-5][0-9].*"))){
                                 if(!posSentence.matches(".*(VBN\\sCD\\sNNP\\s\\.)$") && !posSentence.matches(".*(VBN\\sNNP\\sCD\\s\\.)$")){
-                                    //|| !posSentence.trim().matches(".*(VBN NNP CD).*\"")
                                     System.out.println(tempSentence+" | "+posSentence);
+                                    almostFinedsentence = tempSentence;
+                                    //remove sentences with repeated characters like ... or !!!
+                                    //remove sentences which has many capital letters
                                 }
                             }
                         }
