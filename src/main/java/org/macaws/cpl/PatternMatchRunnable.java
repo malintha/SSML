@@ -3,6 +3,7 @@ package org.macaws.cpl;
 import org.macaws.ke.Controller;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +19,7 @@ class PatternMatchRunnable implements Runnable{
     Controller c;
     int currentIteration;
 
-    public PatternMatchRunnable(int threadId, ArrayList<ContextualPattern> promotedpatternList, int currentIteration) throws FileNotFoundException {
+    public PatternMatchRunnable(int threadId, ArrayList<ContextualPattern> promotedpatternList, int currentIteration) throws IOException {
         this.threadId = threadId;
         this.promotedPatternList = promotedpatternList;
         this.length = promotedpatternList.size();

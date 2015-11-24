@@ -7,6 +7,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
+import org.macaws.cpl.CPLUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -31,11 +32,13 @@ public class Controller {
     static int currentIteration;
     static MyCrawler mc;
     ClassLoader classLoader;
+    static CPLUtils cu;
+
     public Controller(){}
 
     public Controller(int numOfCrawlers, boolean setProxy,int maxDepth, int maxPages) throws Exception {
         classLoader = Thread.currentThread().getContextClassLoader();
-
+        cu = new CPLUtils();
         this.numOfCrawlers = numOfCrawlers;
         CrawlConfig config = new CrawlConfig();
         config.setCrawlStorageFolder(crawlStorageFolder);
@@ -69,7 +72,6 @@ public class Controller {
         this.currentIteration=iteration;
         mc = new MyCrawler();
         mc.setIteration(iteration);
-        System.out.println("#Iteration "+iteration);
         crawlController.start(MyCrawler.class,this.numOfCrawlers);
     }
 
@@ -82,22 +84,23 @@ public class Controller {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream("rawTexts/itr_"+itr+".txt")));
 
-
-            //create 10 threads to process each sentence
-//            ExecutorService threadPool = Executors.newFixedThreadPool(10);
-//            for(int i=0;i<10;i++){
-//                threadPool.submit(new preprocessCorpusRunnable());
-//            }
-
             String text = "";
             String line;
 
             while((line = br.readLine())!=null) {
                 line = line.replaceAll("\\[.*\\]","").replaceAll("\\(.*\\)","");
-                if(!this.doesContainStopWords(line))
-                    System.out.println("##### "+line);
-                else
-                    text+=line;
+
+                if(this.doesContainStopWords(line)) {
+                    if (line.matches("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)")) {
+                        text += line.replaceAll("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)", "$1") + " ";
+                        text += line.replaceAll("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)", "$2");
+                    } else {
+                        text += line;
+                    }
+                }
+                else{
+                    continue;
+                }
             }
 
             SentenceModel model = new SentenceModel(modelIn);
@@ -120,29 +123,69 @@ public class Controller {
     }
 
 
-    public ArrayList<String> preProcess(int itr) throws FileNotFoundException {
+    public ArrayList<String> preProcess(int itr) throws IOException {
         String[] rawSentences = fixSentences(itr);
+
+        //remove copyright sentences
+        //remove sentences with garbage characters.
+        //remove all capital, too spaced sentences.
+        //remove starting dots.
+
         ArrayList<String> finedSentences = new ArrayList<String>();
-        String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\.*\\])*)(\\^*)(\\w*)";
-        String groupSqrBrackets = "$1$6";
-        String removeExtraSpaces = "(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)";
-        String addSpaceBetweenSentences = "(.*\\.)(\\w+.*)";
-        String groupExtraSpaces = "$1$2$3$5$6";
-        String temp,temp1,temp2,temp3;
 
+        for(String sentence:rawSentences){
+            String tempSentence = null;
 
-        for(int i=0;i<rawSentences.length;i++) {
-            temp = rawSentences[i].replaceAll(removeSqrBrackets, groupSqrBrackets);
-            temp1 = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
-            if(temp1.matches(addSpaceBetweenSentences)){
-                temp2=temp1.replaceAll(addSpaceBetweenSentences,"$1");
-                temp3=temp1.replaceAll(addSpaceBetweenSentences,"$2");
-                finedSentences.add(temp2);
-                finedSentences.add(temp3);
+            if(!this.doesContaincopyrightWords(sentence)){
+                tempSentence = sentence;
             }
-            else
-                finedSentences.add(temp1);
-        }
+            else{
+                continue;
+            }
+
+            //extract quotes
+
+
+            if(tempSentence!=null){
+                String posSentence = cu.getPosSentence(tempSentence);
+                    if(posSentence.contains("VB") && posSentence.split(" ").length>2) {
+                        if(!tempSentence.matches(".*(.\\s){2}.*")){
+                            if(!(tempSentence.matches(".*([01]?[0-9]|2[0-3]):[0-5][0-9].*"))){
+                                if(!posSentence.matches(".*(VBN\\sCD\\sNNP\\s\\.)$") && !posSentence.matches(".*(VBN\\sNNP\\sCD\\s\\.)$")){
+                                    //|| !posSentence.trim().matches(".*(VBN NNP CD).*\"")
+                                    System.out.println(tempSentence+" | "+posSentence);
+                                }
+                            }
+                        }
+
+                    }
+//                    finedSentences.add(tempSentence);
+                }
+            }
+
+
+
+
+//        String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\.*\\])*)(\\^*)(\\w*)";
+//        String groupSqrBrackets = "$1$6";
+//        String removeExtraSpaces = "(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)";
+//        String addSpaceBetweenSentences = "(.*\\.)(\\w+.*)";
+//        String groupExtraSpaces = "$1$2$3$5$6";
+//        String temp,temp1,temp2,temp3;
+//
+//
+//        for(int i=0;i<rawSentences.length;i++) {
+//            temp = rawSentences[i].replaceAll(removeSqrBrackets, groupSqrBrackets);
+//            temp1 = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
+//            if(temp1.matches(addSpaceBetweenSentences)){
+//                temp2=temp1.replaceAll(addSpaceBetweenSentences,"$1");
+//                temp3=temp1.replaceAll(addSpaceBetweenSentences,"$2");
+//                finedSentences.add(temp2);
+//                finedSentences.add(temp3);
+//            }
+//            else
+//                finedSentences.add(temp1);
+
     return finedSentences;
     }
 
@@ -158,16 +201,20 @@ public class Controller {
         return s;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws Exception {
         Controller c = new Controller();
+        cu = new CPLUtils();
+
 //        c.fixSentences(0);
-        String[] al = c.fixSentences(1);
+        ArrayList<String> al = c.preProcess(1);
 
 //        String hin = "On 18 August 2012, Laxman announced his retirement from international cricket";
 //        System.out.println(c.isContainsStopWords(hin));
 
         for(String s:al)
             System.out.println(s);
+
+
 //            if(!c.doesContainStopWords(s))
 //            String s1 = s.replaceAll("\\(.*\\)","");
 //                System.out.println(s1.replaceAll("\\[.*\\]",""));
@@ -188,6 +235,18 @@ public class Controller {
                     return true;
             }
 
+        return false;
+    }
+
+    public boolean doesContaincopyrightWords(String sentence){
+
+        String[] copyrightWordsList = {"terms of use","privacy policy","registered","trademark","foundation","inc.","organization",
+                "non-profit","®","license","may apply","creative commons","may apply","terms","policy","pages","@","#"};
+
+            for(String copyrightWordsListWord:copyrightWordsList){
+                if(sentence.toLowerCase().contains(copyrightWordsListWord))
+                    return true;
+            }
         return false;
     }
 

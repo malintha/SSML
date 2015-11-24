@@ -29,15 +29,10 @@ import java.util.regex.Pattern;
  * Created by Malintha on 8/3/2015.
  */
 public class CPL {
-    static ClassLoader classLoader = null;
-    static InputStream modelIn = null;
-    static PerformanceMonitor perfMon = null;
-    static POSModel model = null;
-    static ObjectStream<String> lineStream;
-    static POSTaggerME tagger;
     static Connection con;
     static int currentIteration;
     static ArrayList<String> s;
+    static CPLUtils cplUtils;
 
     public static void main(String[] args) throws Exception {
 
@@ -54,11 +49,12 @@ public class CPL {
      */
 
     public void initialize(int currentIteration) throws Exception {
-        classLoader = Thread.currentThread().getContextClassLoader();
-        modelIn = classLoader.getResourceAsStream("openNLP/en-pos-maxent.bin");
-        perfMon = new PerformanceMonitor(System.err, "sent");
-        model = new POSModel(modelIn);
-        tagger = new POSTaggerME(model);
+//        classLoader = Thread.currentThread().getContextClassLoader();
+//        modelIn = classLoader.getResourceAsStream("openNLP/en-pos-maxent.bin");
+//        perfMon = new PerformanceMonitor(System.err, "sent");
+//        model = new POSModel(modelIn);
+//        tagger = new POSTaggerME(model);
+        cplUtils = new CPLUtils();
         con = DBCon.getInstance();
         this.currentIteration = currentIteration;
         s = new ArrayList<String>();
@@ -217,10 +213,7 @@ public class CPL {
         try {
             for (String s : sentencesList) {
                 s = s.trim();
-                matcher = removeBracketcontent.matcher(s);
-                while (matcher.find()) {
-                    s = matcher.replaceAll("");
-                }
+
                 if (s.contains(fname))
                     juncIndex = s.indexOf(fname);
                 else
@@ -229,7 +222,7 @@ public class CPL {
 
                 if (juncIndex != -1) {
                     followingSub = s.substring(juncIndex);
-                    posVsSent.put(followingSub, this.getPosSentence(followingSub));
+                    posVsSent.put(followingSub, cplUtils.getPosSentence(followingSub));
                 }
             }
         } catch (IOException e) {
@@ -291,21 +284,21 @@ public class CPL {
     //extract category instances
 
     //get pos sentence
-    public String getPosSentence(String sentence) throws IOException {
-
-        lineStream = new PlainTextByLineStream(new StringReader(sentence));
-        String line;
-        String tagSentence = "";
-        while ((line = lineStream.read()) != null) {
-            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
-            String[] tags = tagger.tag(whitespaceTokenizerLine);
-
-            for (String t : tags) {
-                tagSentence += t + " ";
-            }
-        }
-        return tagSentence.trim();
-    }
+//    public String getPosSentence(String sentence) throws IOException {
+//
+//        lineStream = new PlainTextByLineStream(new StringReader(sentence));
+//        String line;
+//        String tagSentence = "";
+//        while ((line = lineStream.read()) != null) {
+//            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
+//            String[] tags = tagger.tag(whitespaceTokenizerLine);
+//
+//            for (String t : tags) {
+//                tagSentence += t + " ";
+//            }
+//        }
+//        return tagSentence.trim();
+//    }
 }
 
 
