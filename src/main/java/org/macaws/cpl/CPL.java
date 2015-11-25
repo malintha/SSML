@@ -165,7 +165,7 @@ public class CPL {
 
     }
 
-    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws SQLException, InterruptedException, FileNotFoundException {
+    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws SQLException, InterruptedException, IOException {
 
         //load promoted patterns
         PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");

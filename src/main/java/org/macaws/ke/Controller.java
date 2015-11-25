@@ -89,13 +89,28 @@ public class Controller {
 
             while((line = br.readLine())!=null) {
                 line = line.replaceAll("\\[.*\\]","").replaceAll("\\(.*\\)","");
-
+                String tempLine1 = "", tempLine2 = "";
                 if(this.doesContainStopWords(line)) {
                     if (line.matches("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)")) {
-                        text += line.replaceAll("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)", "$1") + " ";
-                        text += line.replaceAll("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)", "$2");
+                        tempLine1 = line.replaceAll("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)", "$1") + " ";
+                        tempLine2 = line.replaceAll("(.*[a-zA-Z]{1,3}||\"\\.)(\"||[a-zA-Z]+.*\\.)", "$2");
+
                     } else {
                         text += line;
+                    }
+
+                    if (tempLine1.matches("(.*\\?)(.*)")) {
+                        text += tempLine1.replaceAll("(.*\\?)(.*)", "$1");
+                        text += tempLine1.replaceAll("(.*\\?)(.*)", "$2");
+                    } else {
+                        text += tempLine1;
+                    }
+
+                    if (tempLine2.matches("(.*\\?)(.*)")) {
+                        text += tempLine2.replaceAll("(.*\\?)(.*)", "$1");
+                        text += tempLine2.replaceAll("(.*\\?)(.*)", "$2");
+                    } else {
+                        text += tempLine2;
                     }
                 }
                 else{
@@ -152,8 +167,27 @@ public class Controller {
                         if(!tempSentence.matches(".*(.\\s){2}.*")){
                             if(!(tempSentence.matches(".*([01]?[0-9]|2[0-3]):[0-5][0-9].*"))){
                                 if(!posSentence.matches(".*(VBN\\sCD\\sNNP\\s\\.)$") && !posSentence.matches(".*(VBN\\sNNP\\sCD\\s\\.)$")){
-                                    System.out.println(tempSentence+" | "+posSentence);
-                                    almostFinedsentence = tempSentence;
+                                    if(!tempSentence.matches("^\\w+\\s+\\w+\\s+[0-9]{1,2}\\s+||\\-\\w+\\s+||\\-[0-9]{4}.*$") && !posSentence.matches("^.*(VBN\\sIN\\sCD\\sNNP).*$"))
+                                          if(!tempSentence.matches("^.*([A-Z]{3,}\\s*)+.*$")) {
+                                            if (!tempSentence.matches("^.*(\\.{3,}|!{3,}).*$")) {
+                                                tempSentence = tempSentence.replaceAll("^[^A-Z|\"]*(.*)","$1");
+                                                if(tempSentence.matches(".*\"(.*)\"")){
+                                                    String tempSentence1 = tempSentence.replaceAll(".*\"(.*)\".*","$1");
+                                                    if(2*tempSentence1.split(" ").length>tempSentence.split(" ").length){
+                                                        tempSentence = tempSentence1;
+                                                    }
+                                                }
+                                                System.out.println(tempSentence);
+
+//                                                }
+//                                                else{
+//                                                    tempSentence = tempSentence.replaceAll("\"","");
+//                                                }
+
+                                            }
+                                        }
+
+
                                     //remove sentences with repeated characters like ... or !!!
                                     //remove sentences which has many capital letters
                                 }
@@ -190,6 +224,8 @@ public class Controller {
 
     return finedSentences;
     }
+
+
 
     public String removeCommas(String s){
         String commaBetweenWords = "(\\w+)(\\s{0,1})(\\,)(\\w+)";
