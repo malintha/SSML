@@ -34,17 +34,21 @@ public class CPLUtils {
     }
 
 
-    public String getPosSentence(String sentence) throws IOException {
+    public String getPosSentence(String sentence) {
         lineStream = new PlainTextByLineStream(new StringReader(sentence));
         String line;
         String tagSentence = "";
-        while ((line = lineStream.read()) != null) {
-            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
-            String[] tags = tagger.tag(whitespaceTokenizerLine);
+        try {
+            while ((line = lineStream.read()) != null) {
+                String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
+                String[] tags = tagger.tag(whitespaceTokenizerLine);
 
-            for (String t : tags) {
-                tagSentence += t + " ";
+                for (String t : tags) {
+                    tagSentence += t + " ";
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return tagSentence.trim();
     }

@@ -1,0 +1,20 @@
+100 web pages
+3125 sentences
+
+754 matches to stored patterns
+
+He scored his first double-century against Pakistan in 2002, at the 2nd Asian Test Championship final. | argument scored his
+He scored his maiden century in that format during the tournament. | argument scored his
+After being dropped on zero, Ponting scored his fifth double-century in the Third and final Test in Hobart. | argument scored his
+India toured Pakistan in January–February 2006 and Dhoni scored his maiden century in the second Test at Faisalabad . | argument scored his
+During New Zealand's tour of India in November 2010, Harbhajan scored his maiden Test century during the First Test in Ahmedabad. | argument scored his
+He is the fourth India bowler after Kapil Dev, Maninder Singh and Kumble to be ranked No. 1. Jadeja scored his maiden test fifty on 20 July 2014 playing against England saving the match for India who were struggling at 235/7. | argument scored his
+
+
+He was succeeded as Australian Twenty20 captain by team vice-captain Michael Clarke . | argument captain
+World Cup and resignation as captain Ponting retained the captaincy of Australia for the 2011 World Cup in India, Sri Lanka and Bangladesh. | argument captain
+According to former Australian captain Allan Border, what you see with Ponting is what you get, and "he wears his heart on his sleeve". | argument captain
+
+extract the arguments, filter out non NP sentences
+
+1.47 seconds 29 patterns, 3 categories, 3125 sentences, 5 threads

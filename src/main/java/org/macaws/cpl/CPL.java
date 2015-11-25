@@ -165,7 +165,7 @@ public class CPL {
 
     }
 
-    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws SQLException, InterruptedException, IOException {
+    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws Exception {
 
         //load promoted patterns
         PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");
@@ -199,7 +199,7 @@ public class CPL {
         ArrayList<String> patternList = new ArrayList<>();
         ArrayList<String[]> taggedArray = new ArrayList<>();
         HashMap<String, String> posVsSent = new HashMap<>();
-        Pattern removeBracketcontent = Pattern.compile("\\((.*)\\)\\s");
+//        Pattern removeBracketcontent = Pattern.compile("\\((.*)\\)\\s");
         Matcher matcher;
 //        String pa = "(NN.){1,4}\\s(VB.)\\s(DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
 //        String pa = "(NN.{0,1}){1,4}\\s(VB.|NN)\\s(IN|DT|JJ.{0,1}|RB|\\s)*((NN.{0,1}|\\s)*|(IN|\\s){0,1})";
@@ -210,7 +210,7 @@ public class CPL {
 
         int juncIndex = 0;
 
-        try {
+
             for (String s : sentencesList) {
                 s = s.trim();
 
@@ -225,9 +225,8 @@ public class CPL {
                     posVsSent.put(followingSub, cplUtils.getPosSentence(followingSub));
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
         Iterator posVsSentIterator = posVsSent.entrySet().iterator();
 
         while (posVsSentIterator.hasNext()) {
@@ -281,24 +280,6 @@ public class CPL {
         return patternList;
     }
 
-    //extract category instances
-
-    //get pos sentence
-//    public String getPosSentence(String sentence) throws IOException {
-//
-//        lineStream = new PlainTextByLineStream(new StringReader(sentence));
-//        String line;
-//        String tagSentence = "";
-//        while ((line = lineStream.read()) != null) {
-//            String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE.tokenize(line);
-//            String[] tags = tagger.tag(whitespaceTokenizerLine);
-//
-//            for (String t : tags) {
-//                tagSentence += t + " ";
-//            }
-//        }
-//        return tagSentence.trim();
-//    }
 }
 
 

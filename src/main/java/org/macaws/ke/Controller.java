@@ -34,7 +34,10 @@ public class Controller {
     ClassLoader classLoader;
     static CPLUtils cu;
 
-    public Controller(){}
+    public Controller() throws Exception {
+        classLoader = Thread.currentThread().getContextClassLoader();
+        cu = new CPLUtils();
+    }
 
     public Controller(int numOfCrawlers, boolean setProxy,int maxDepth, int maxPages) throws Exception {
         classLoader = Thread.currentThread().getContextClassLoader();
@@ -144,22 +147,18 @@ public class Controller {
         //remove copyright sentences
         //remove sentences with garbage characters.
         //remove all capital, too spaced sentences.
-        //remove starting dots.
+        //remove repeating dots dots, !!! and hash tags
 
         ArrayList<String> finedSentences = new ArrayList<String>();
 
         for(String sentence:rawSentences){
             String tempSentence = null;
-            String almostFinedsentence = null;
             if(!this.doesContaincopyrightWords(sentence)){
                 tempSentence = sentence;
             }
             else{
                 continue;
             }
-
-            //extract quotes
-
 
             if(tempSentence!=null){
                 String posSentence = cu.getPosSentence(tempSentence);
@@ -171,23 +170,17 @@ public class Controller {
                                           if(!tempSentence.matches("^.*([A-Z]{3,}\\s*)+.*$")) {
                                             if (!tempSentence.matches("^.*(\\.{3,}|!{3,}).*$")) {
                                                 tempSentence = tempSentence.replaceAll("^[^A-Z|\"]*(.*)","$1");
-                                                if(tempSentence.matches(".*\"(.*)\"")){
+                                                if(tempSentence.matches(".*\"(.*)\".*")){
                                                     String tempSentence1 = tempSentence.replaceAll(".*\"(.*)\".*","$1");
                                                     if(2*tempSentence1.split(" ").length>tempSentence.split(" ").length){
                                                         tempSentence = tempSentence1;
                                                     }
                                                 }
-                                                System.out.println(tempSentence);
-
-//                                                }
-//                                                else{
-//                                                    tempSentence = tempSentence.replaceAll("\"","");
-//                                                }
-
+                                                if(tempSentence!=""||tempSentence!=null)
+                                                    finedSentences.add(tempSentence);
+//                                                System.out.println(tempSentence.replaceAll("(.*)(\\s+\\.)","$1")+ " | "+posSentence.replaceAll("(.*)(\\s+\\.)","$1"));
                                             }
                                         }
-
-
                                     //remove sentences with repeated characters like ... or !!!
                                     //remove sentences which has many capital letters
                                 }
@@ -195,36 +188,11 @@ public class Controller {
                         }
 
                     }
-//                    finedSentences.add(tempSentence);
                 }
             }
 
-
-
-
-//        String removeSqrBrackets = "(\\w*)(\\^*)((\\[\\.*\\])*)(\\^*)(\\w*)";
-//        String groupSqrBrackets = "$1$6";
-//        String removeExtraSpaces = "(\\w*)([\\.,]*)(\\s)(\\s*)([\\.,]*)(\\w*)";
-//        String addSpaceBetweenSentences = "(.*\\.)(\\w+.*)";
-//        String groupExtraSpaces = "$1$2$3$5$6";
-//        String temp,temp1,temp2,temp3;
-//
-//
-//        for(int i=0;i<rawSentences.length;i++) {
-//            temp = rawSentences[i].replaceAll(removeSqrBrackets, groupSqrBrackets);
-//            temp1 = temp.replaceAll(removeExtraSpaces,groupExtraSpaces);
-//            if(temp1.matches(addSpaceBetweenSentences)){
-//                temp2=temp1.replaceAll(addSpaceBetweenSentences,"$1");
-//                temp3=temp1.replaceAll(addSpaceBetweenSentences,"$2");
-//                finedSentences.add(temp2);
-//                finedSentences.add(temp3);
-//            }
-//            else
-//                finedSentences.add(temp1);
-
     return finedSentences;
     }
-
 
 
     public String removeCommas(String s){
@@ -251,11 +219,6 @@ public class Controller {
 
         for(String s:al)
             System.out.println(s);
-
-
-//            if(!c.doesContainStopWords(s))
-//            String s1 = s.replaceAll("\\(.*\\)","");
-//                System.out.println(s1.replaceAll("\\[.*\\]",""));
 
 
         }

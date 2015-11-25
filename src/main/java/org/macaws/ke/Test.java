@@ -121,7 +121,17 @@ public class Test {
 
     public static void main(String[] args) {
 
-        test();
+        String s = "Jadeja represents Saurashtra in first-class cricket and the Chennai Super Kings in the Indian Premier League";
+        Pattern p = Pattern.compile("((\\w*)\\s){3}(in the)(.*)$");
+        Matcher m = p.matcher(s);
+
+        while(m.find()){
+            System.out.println(m.group(2));
+        }
+
+
+
+//        test();
 //        String s = "Ishant Sharma (born 2 September 1988) is an Indian cricketer who has represented India in Tests, ODIs and T20Is.";
 //        Pattern p = Pattern.compile("\\((.*)\\)\\s");
 //        Matcher m = p.matcher(s);
