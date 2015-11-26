@@ -50,17 +50,20 @@ class PatternMatchRunnable implements Runnable{
                     String extraction="";
                     if(precedingWordsArray.length>=3){
                         for(int j=precedingWordsArray.length-3;j<precedingWordsArray.length;j++){
-                            if(posSentenceArray[j].matches("NN.{0,2}"))
-                            extraction+=precedingWordsArray[j]+" ";
+                            if(posSentenceArray[j].matches("NNP.?")) {
+                                extraction += precedingWordsArray[j] + " ";
+                                //remove and, at, against, vs, versus, , ,
+                                //if second word is a conjuction, remove the first word
+                            }
                         }
                     }
                     else{
                         for(int j=0;j<precedingWordsArray.length;j++){
-                            if(posSentenceArray[j].matches("NN.{0,2}"))
+                            if(posSentenceArray[j].matches("NNP.?"))
                             extraction+=precedingWordsArray[j]+" ";
                         }
                     }
-                    if(extraction!=""||extraction!=null)
+                    if(extraction.trim().matches("^.*[a-zA-Z].*$"))
                     System.out.println(sentence+" | "+extraction+" | "+patternWords);
                 }
             }
