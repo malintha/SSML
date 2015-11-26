@@ -123,12 +123,27 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
 
-        String s = "During New Zealand's tour of India in November 2010, Harbhajan scored his maiden Test century during the First Test in Ahmedabad.";
+        String patternText = "argument took 3 wickets";
         CPLUtils cu = new CPLUtils();
-//        System.out.println(cu.getPosSentence(s));
-        ArrayList<String> al = cu.readCorpusFromFile(1);
-        for(String ss:al)
-            System.out.println(ss);
+        String patternPos = cu.getPosSentence(patternText);
+
+        if(patternPos.contains("CD")) {
+            int CDIndex = 0;
+            for (int j = 0; j < patternPos.split(" ").length; j++) {
+                if (patternPos.split(" ")[j].equals("CD"))
+                    CDIndex = j;
+            }
+            String[] patternTextSplitArray = patternText.split(" ");
+            patternTextSplitArray[CDIndex] = "[a-zA-Z_0-9]{1,}";
+            patternText = "";
+            for(int j=0;j<patternTextSplitArray.length;j++)
+                patternText+=patternTextSplitArray[j]+" ";
+            System.out.println(patternText);
+            System.out.println("Chaminda Vaas took 8 wickets for 19 runs in 2001/02 against Zimbabwe".matches(".*"+patternText.replaceAll("argument","").trim()+".*"));
+        }
+//        ArrayList<String> al = cu.readCorpusFromFile(1);
+//        for(String ss:al)
+//            System.out.println(ss);
 
 
 

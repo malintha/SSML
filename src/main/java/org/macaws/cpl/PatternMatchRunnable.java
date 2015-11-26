@@ -40,11 +40,32 @@ class PatternMatchRunnable implements Runnable{
             String patternText = promotedPatternList.get(i).getText();
             String patternWords = patternText.replaceAll("argument","");
             String patternCategory = promotedPatternList.get(i).getCategory();
+            String patternPos = cplUtils.getPosSentence(patternText);
+            String patternTextRegex;
+
+            if(patternPos.contains("CD")) {
+                int CDIndex = 0;
+                for (int j = 0; j < patternPos.split(" ").length; j++) {
+                    if (patternPos.split(" ")[j].equals("CD"))
+                        CDIndex = j;
+                }
+                String[] patternWordsSplitArray = patternWords.split(" ");
+                patternWordsSplitArray[CDIndex] = "[a-zA-Z_0-9]{1,}";
+                patternText = "";
+                for (int j = 0; j < patternWordsSplitArray.length; j++)
+                    patternText += patternWordsSplitArray[j] + " ";
+
+                patternText=patternText.trim();
+                patternTextRegex = ".*"+patternText+".*";
+                System.out.println("### "+patternTextRegex);
+            }
+
+            patternTextRegex = ".*"+patternWords+".*";
 
             for(String sentence: corpusSentences){
                 //matches proper nouns, not scores
 //                String patternRegex = ".*([a-zA-Z]{1,}\\s?){1,3}"+patternText.replaceAll("argument","")+".*";
-                if(sentence.contains(patternText.replaceAll("argument", ""))){
+                if(sentence.matches(patternTextRegex)){
                     String precedingWords = sentence.substring(0, sentence.indexOf(patternWords));
                     String posSentence = cplUtils.getPosSentence(sentence.replace("-","").replaceAll("^(.*)\\.$","$1"));
                     String[] precedingWordsArray = precedingWords.split(" ");
@@ -58,10 +79,10 @@ class PatternMatchRunnable implements Runnable{
                                 //remove and, at, against, vs, versus, , ,
                                 //if second word is a conjuction, remove the first word
                             }
-                            if(j==precedingWordsArray.length-3 && tempExtraction.contains(",")){
+                            if(j==precedingWordsArray.length-2 && tempExtraction.contains(",")){
                                 tempExtraction="";
                             }
-                            if(j==precedingWordsArray.length-2 && posSentenceArray[j].equals("IN||CD.?")){
+                            if(j==precedingWordsArray.length-2 && posSentenceArray[j].matches("IN||CD.?")){
                                 tempExtraction="";
                             }
                             extraction=tempExtraction;
@@ -74,7 +95,7 @@ class PatternMatchRunnable implements Runnable{
                         }
                     }
                     if(extraction.trim().matches("^.*[a-zA-Z].*$"))
-                    System.out.println(sentence+" | "+extraction+" | "+patternWords);
+                    System.out.println(extraction+" | "+patternCategory + " | "+patternText);
                 }
             }
 
