@@ -9,6 +9,7 @@ import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import org.apache.poi.hssf.record.formula.functions.Match;
+import org.macaws.cpl.CPLUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,15 +120,15 @@ public class Test {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-        String s = "Jadeja represents Saurashtra in first-class cricket and the Chennai Super Kings in the Indian Premier League";
-        Pattern p = Pattern.compile("((\\w*)\\s){3}(in the)(.*)$");
-        Matcher m = p.matcher(s);
 
-        while(m.find()){
-            System.out.println(m.group(2));
-        }
+        String s = "During New Zealand's tour of India in November 2010, Harbhajan scored his maiden Test century during the First Test in Ahmedabad.";
+        CPLUtils cu = new CPLUtils();
+//        System.out.println(cu.getPosSentence(s));
+        ArrayList<String> al = cu.readCorpusFromFile(1);
+        for(String ss:al)
+            System.out.println(ss);
 
 
 

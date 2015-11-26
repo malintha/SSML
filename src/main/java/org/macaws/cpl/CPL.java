@@ -8,10 +8,7 @@ import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
 import org.macaws.ke.Controller;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +34,9 @@ public class CPL {
     public static void main(String[] args) throws Exception {
 
         CPL cpl = new CPL();
+
         cpl.initialize(1);
+//        cplUtils.writeCorpusToFile(1);
 //        cpl.runCPL();
         cpl.extractInstancesFromPromotedPatterns();
     }
@@ -54,10 +53,13 @@ public class CPL {
 //        perfMon = new PerformanceMonitor(System.err, "sent");
 //        model = new POSModel(modelIn);
 //        tagger = new POSTaggerME(model);
+
+
         cplUtils = new CPLUtils();
         con = DBCon.getInstance();
         this.currentIteration = currentIteration;
         s = new ArrayList<String>();
+
     }
 
 

@@ -6,10 +6,9 @@ import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
+import org.macaws.ke.Controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.sql.Connection;
 import java.util.ArrayList;
 
@@ -52,4 +51,38 @@ public class CPLUtils {
         }
         return tagSentence.trim();
     }
+
+    public void writeCorpusToFile(int currentIteration) {
+        //write refined corpus to text
+        try {
+            Controller controller = new Controller();
+            ArrayList<String> al = controller.preProcess(1);
+            File f = new File("src\\main\\resources\\FinedTexts\\" + currentIteration + ".txt");
+            if (!f.exists()) {
+                PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("src\\main\\resources\\FinedTexts\\" + currentIteration + ".txt", true)));
+                for (String s : al)
+                    out.write(s+"\n");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<String> readCorpusFromFile (int currentIteration){
+        BufferedReader br = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream("FinedTexts/"+currentIteration+".txt")));
+        ArrayList<String> finedTextsArrayList = new ArrayList<>();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                finedTextsArrayList.add(line);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return finedTextsArrayList;
+    }
+
 }

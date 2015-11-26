@@ -26,9 +26,11 @@ class PatternMatchRunnable implements Runnable{
         this.length = promotedpatternList.size();
         this.currentIteration = currentIteration;
         c = new Controller();
-        this.corpusSentences = c.preProcess(1);
-        upperBound = threadId==4?((length/5)*(threadId+1)+(length%5)):((length/5)*(threadId+1));
         cplUtils = new CPLUtils();
+//        this.corpusSentences = c.preProcess(1); //cplUtils.readCorpusFromFile(1);
+        this.corpusSentences = cplUtils.readCorpusFromFile(1);
+        upperBound = threadId==4?((length/5)*(threadId+1)+(length%5)):((length/5)*(threadId+1));
+//        cplUtils = new CPLUtils();
     }
 
     @Override
@@ -48,13 +50,21 @@ class PatternMatchRunnable implements Runnable{
                     String[] precedingWordsArray = precedingWords.split(" ");
                     String[] posSentenceArray = posSentence.trim().split(" ");
                     String extraction="";
+                    String tempExtraction = "";
                     if(precedingWordsArray.length>=3){
                         for(int j=precedingWordsArray.length-3;j<precedingWordsArray.length;j++){
                             if(posSentenceArray[j].matches("NNP.?")) {
-                                extraction += precedingWordsArray[j] + " ";
+                                tempExtraction += precedingWordsArray[j] + " ";
                                 //remove and, at, against, vs, versus, , ,
                                 //if second word is a conjuction, remove the first word
                             }
+                            if(j==precedingWordsArray.length-3 && tempExtraction.contains(",")){
+                                tempExtraction="";
+                            }
+                            if(j==precedingWordsArray.length-2 && posSentenceArray[j].equals("IN||CD.?")){
+                                tempExtraction="";
+                            }
+                            extraction=tempExtraction;
                         }
                     }
                     else{
