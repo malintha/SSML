@@ -196,10 +196,11 @@ public class CPL {
                     System.out.println(candidateName+" | "+suggestedfullName+" | "+occurrence);
                     if(occurrence>3){
                         this.updatePromotedInstance(suggestedfullName,rsCandidateIns.getString("category"),rsCandidateIns.getString("matching_patterns"));
-
-
                     }
                 }
+                //else
+                //get count of the categories that it co-occur with
+                
 
             }
         }

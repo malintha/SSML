@@ -60,7 +60,7 @@ public class CPLUtils {
         //write refined corpus to text
         try {
             Controller controller = new Controller();
-            ArrayList<String> al = controller.preProcess(1);
+            ArrayList<String> al = controller.preProcess(currentIteration);
             File f = new File("src\\main\\resources\\FinedTexts\\" + currentIteration + ".txt");
             if (!f.exists()) {
                 PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("src\\main\\resources\\FinedTexts\\" + currentIteration + ".txt", true)));

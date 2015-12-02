@@ -18,3 +18,167 @@ According to former Australian captain Allan Border, what you see with Ponting i
 extract the arguments, filter out non NP sentences
 
 1.47 seconds 29 patterns, 3 categories, 3125 sentences, 5 threads
+
+-----
+
+Australia  | Team | argument failed to reach the finals    1
+England  | Team | argument captain	1
+Sri Lanka  | Team | argument captain		1
+Michael Vaughan  | Team | argument captain	0
+England  | Team | argument captain	1
+One Day International  | Team | argument captain	1
+Queenslander Stuart Law  | Team | argument captain	1
+Cup  | Team | argument captain	0
+Test  | Team | argument captain	1
+Twenty20  | Team | argument captain	1
+New Zealand  | Team | argument captain	1
+Test  | Team | argument captain	1
+Australia  | Team | argument captain	1
+Test  | Team | argument captain		1
+Dhoni,  | Team | argument captain	0
+Rahul Dravid  | Team | argument captain	0
+Dhoni's  | Team | argument captain	1
+Dhoni's  | Team | argument captain	1
+Test  | Team | argument captain		1
+Harbhajan  | Team | argument captain	0
+Kapil  | Team | argument captain	0
+Kapil Dev  | Team | argument captain	0
+Test  | Team | argument captain		1
+Test  | Team | argument captain		1
+Ann Grant  | Team | argument captain	0
+Virender Sehwag  | Team | argument captain	0			
+17	9	65.38%
+
+Singh  | Team | argument in the			0
+Pakistan  | Team | argument in the		1
+Mumbai Indians  | Team | argument in the	1
+India  | Team | argument in the			1
+Salil Ankola  | Team | argument in the		0
+Steve Waugh  | Team | argument in the		0
+Cricketer  | Team | argument in the		0
+Wisden Cricketer  | Team | argument in the	0
+Advanced  | Team | argument in the		0
+Lanka Cricket Board  | Team | argument in the	1
+Warwickshire  | Team | argument in the		1
+Lee  | Team | argument in the			0
+Mosman  | Team | argument in the		0
+Blues'  | Team | argument in the		1
+Ashes  | Team | argument in the			0
+New Zealand  | Team | argument in the		1
+Muralitharan  | Team | argument in the		0
+Punjab  | Team | argument in the		1
+Dale Steyn  | Team | argument in the		0
+Ludhiana  | Team | argument in the		0
+Fatorda Stadium  | Team | argument in the	0
+World  | Team | argument in the			1
+Pietersen off-spin  | Team | argument in the	0
+Vaughan  | Team | argument in the		0
+Australia  | Team | argument in the		1
+Pietersen  | Team | argument in the		0
+Tait  | Team | argument in the			0
+Ponting  | Team | argument in the		0
+Australia's  | Team | argument in the		1
+England  | Team | argument in the		1
+Ponting  | Team | argument in the		0
+Test  | Team | argument in the			1
+South Africa  | Team | argument in the		1
+England  | Team | argument in the		1
+South Africa  | Team | argument in the		1
+Australia  | Team | argument in the		1
+Tait  | Team | argument in the			0
+Leicestershire  | Team | argument in the	1
+South Africa  | Team | argument in the		1
+Bishop  | Team | argument in the		0
+Bihar  | Team | argument in the			1	
+Dhoni  | Team | argument in the			0
+Sri Lanka  | Team | argument in the		1
+India  | Team | argument in the			1
+Day International  | Team | argument in the	0
+Services  | Team | argument in the		0
+Pakistan  | Team | argument in the		1
+India's  | Team | argument in the		1
+India's  | Team | argument in the		1
+India Delhi  | Team | argument in the		1
+Wisden  | Team | argument in the		0
+Sidebottom  | Team | argument in the		0
+Mumbai Indians  | Team | argument in the	1
+Mumbai Indians  | Team | argument in the	1
+Sri Lanka  | Team | argument in the		1
+dismissed Dhammika  | Team | argument in the	0
+Sri Lanka  | Team | argument in the		1
+India  | Team | argument in the			1	
+Ishant  | Team | argument in the		0
+Sachin  | Team | argument in the		0
+Ponting  | Team | argument in the		0
+Australia  | Team | argument in the		1
+India  | Team | argument in the			1
+Sri Lanka  | Team | argument in the		1
+Sunrisers Hyderabad  | Team | argument in the	1
+Central Zone  | Team | argument in the		1
+Kumar  | Team | argument in the			0
+Kumar  | Team | argument in the			0
+England  | Team | argument in the		1
+New Laws  | Team | argument in the		0
+Australia England  | Team | argument in the	1
+Ireland  | Team | argument in the		1
+Amit Mishra  | Team | argument in the		0
+Pollard  | Team | argument in the		0
+Singh  | Team | argument in the			0
+Pakistan  | Team | argument in the		1
+Mumbai Indians  | Team | argument in the	1
+Bangladesh  | Team | argument in the		1
+Road,  | Team | argument in the			0
+England  | Team | argument in the		1
+India U19  | Team | argument in the		1
+Mumbai Indians  | Team | argument in the	1
+Odisha  | Team | argument in the		1
+Test  | Team | argument in the			1
+Lancashire  | Team | argument in the		1
+England  | Team | argument in the		1
+Chennai Super Kings  | Team | argument in the	1	
+West Zone  | Team | argument in the		1
+versus South  | Team | argument in the		0
+Ishant  | Team | argument in the		0
+Ishant  | Team | argument in the		0
+Wasim Akram  | Team | argument in the		0
+England's  | Team | argument in the		1
+Australia  | Team | argument in the		1
+South Zone  | Team | argument in the		1
+Rahul  | Team | argument in the			0
+Debut  | Team | argument in the			0
+Clarence Moody  | Team | argument in the	0
+Normans  | Team | argument in the		0
+Muslim  | Team | argument in the		0
+Hospital  | Team | argument in the		0
+Marquess  | Team | argument in the		0
+Park Street  | Team | argument in the		0
+for  | Team | argument in the			0
+Services  | Team | argument in the		0
+to  | Team | argument in the			0
+Auckland  | Team | argument in the		0
+Maori  | Team | argument in the			0
+Auckland's  | Team | argument in the		0
+Greater Auckland  | Team | argument in the	0
+Rangitoto College  | Team | argument in the	1
+Zealand's  | Team | argument in the		1
+Delhi  | Team | argument in the			1
+Chennai Super Kings  | Team | argument in the	1
+Chennai Super Kings  | Team | argument in the	1
+Ashwin  | Team | argument in the		0
+Test  | Team | argument in the			0
+Punjab  | Team | argument in the		1
+Dale Steyn  | Team | argument in the		0
+Australia  | Team | argument in the		1
+Australia  | Team | argument in the		1
+Australia  | Team | argument in the		1
+Delhi Daredevils  | Team | argument in the	1
+Steyn  | Team | argument in the			0
+December  | Team | argument in the		0
+Steyn  | Team | argument in the			0
+India's  | Team | argument in the		1
+November  | Team | argument in the		0
+United Arab Emirates  | Team | argument in the	1
+66	63	51.16%
+
+
+

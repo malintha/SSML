@@ -4,6 +4,7 @@ import de.l3s.boilerpipe.extractors.ArticleExtractor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.macaws.cpl.CPLUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,19 +13,15 @@ import java.util.ArrayList;
  * Created by Malintha on 10/13/2015.
  */
 public class Client {
-    public static void main(String[] args) throws IOException {
-        try {
-//            Controller c = new Controller(5,true,5,200);
-//            c.crawlController.start(MyCrawler.class,5);
-//            c.readFromNet(1);
-            Controller c = new Controller();
-            ArrayList<String> s = c.preProcess(1);
-            for(int i=0;i<1000;i++)
-                System.out.println(s.get(i));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws Exception {
+//        Controller c = new Controller(10,false,5,1000);
+//        c.readFromNet(4);
+//        ArrayList<String> al =  c.preProcess(4);
+        CPLUtils cplUtils = new CPLUtils();
+//        cplUtils.writeCorpusToFile(4);
+        ArrayList<String> sentences = cplUtils.readCorpusFromFile(4);
+        for(String s:sentences)
+            System.out.println(s);
     }
 
 }

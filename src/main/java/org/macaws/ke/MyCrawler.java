@@ -39,7 +39,7 @@ public class MyCrawler extends WebCrawler {
     public boolean shouldVisit(Page referringPage, WebURL url) {
         String href = url.getURL().toLowerCase();
         if(!FILTERS.matcher(href).matches()) {
-            //add url to the ridis db
+
             return true;
         }
         else

@@ -54,81 +54,91 @@ class PatternMatchRunnable implements Runnable{
     @Override
     public void run() {
 
-        for(int i=(length/5)*threadId;i<upperBound;i++){
+        for (int i = (length / 5) * threadId; i < upperBound; i++) {
 //            System.out.println("ThreadId = "+threadId+" i ="+i+" pattern : "+promotedPatternList.get(i).getText());
             String patternText = promotedPatternList.get(i).getText();
-            String patternWords = patternText.replaceAll("argument","").trim();
+            String patternWords = patternText.replaceAll("argument", "").trim();
             String patternCategory = promotedPatternList.get(i).getCategory();
             String patternPos = cplUtils.getPosSentence(patternText);
             String patternTextRegex = null;
             String precedingWordSplitter = "";
 
-            if(patternPos.contains("CD")) {
+            if (patternPos.contains("CD")) {
                 int CDIndex = 0;
                 for (int j = 0; j < patternPos.split(" ").length; j++) {
                     if (patternPos.split(" ")[j].equals("CD"))
                         CDIndex = j;
                 }
                 String[] patternWordsSplitArray = patternWords.split(" ");
-                patternWordsSplitArray[CDIndex-1] = "[a-zA-Z_0-9]{1,}";
+                patternWordsSplitArray[CDIndex - 1] = "[a-zA-Z_0-9]{1,}";
                 patternText = "";
                 for (int j = 0; j < patternWordsSplitArray.length; j++)
                     patternText += patternWordsSplitArray[j] + " ";
 
-                patternText=patternText.trim();
-                patternTextRegex = ".*"+patternText+".*";
+                patternText = patternText.trim();
+                patternTextRegex = ".*" + patternText + ".*";
                 precedingWordSplitter = patternWords.split(" ")[0];
             }
-            if(patternTextRegex==null) {
+            if (patternTextRegex == null) {
                 patternTextRegex = ".*" + patternWords.trim() + ".*";
                 precedingWordSplitter = patternWords;
             }
 
-            System.out.println(i+" "+patternTextRegex + " |"+patternWords);
+            System.out.println(i + " " + patternTextRegex + " |" + patternWords);
 
-            for(String sentence: corpusSentences){
+            for (String sentence : corpusSentences) {
                 //matches proper nouns, not scores
 //                String patternRegex = ".*([a-zA-Z]{1,}\\s?){1,3}"+patternText.replaceAll("argument","")+".*";
-                if(sentence.matches(patternTextRegex)){
+                if (sentence.matches(patternTextRegex)) {
                     String precedingWords = sentence.substring(0, sentence.indexOf(precedingWordSplitter));
+
+                    String followingWords = sentence.substring(sentence.indexOf(precedingWordSplitter));
+                    String realFollowingWords = followingWords;
+                    String[] followingWordsArray = followingWords.split(" ");
+                    if (followingWordsArray.length > 2) {
+                        realFollowingWords = followingWordsArray[0] + " " + followingWordsArray[1] + " " + followingWordsArray[2];
+                    }
+
+
 //                    System.out.println(precedingWords);
-                    String posSentence = cplUtils.getPosSentence(sentence.replace("-","").replaceAll("^(.*)\\.$","$1"));
+                    String posSentence = cplUtils.getPosSentence(sentence.replace("-", "").replaceAll("^(.*)\\.$", "$1"));
                     String[] precedingWordsArray = precedingWords.split(" ");
                     String[] posSentenceArray = posSentence.trim().split(" ");
-                    String extraction="";
+                    String extraction = "";
                     String tempExtraction = "";
 
-                    if(precedingWordsArray.length>=3){
-                        for(int j=precedingWordsArray.length-3;j<precedingWordsArray.length;j++){
-                            if(posSentenceArray[j].matches("NNP.?")) {
+                    if (precedingWordsArray.length >= 3) {
+                        for (int j = precedingWordsArray.length - 3; j < precedingWordsArray.length; j++) {
+                            if (posSentenceArray[j].matches("NNP.?")) {
                                 tempExtraction += precedingWordsArray[j] + " ";
                                 //remove and, at, against, vs, versus, , ,
                                 //if second word is a conjuction, remove the first word
                             }
-                            if(j==precedingWordsArray.length-2 && tempExtraction.contains(",")){
-                                tempExtraction="";
+                            if (j == precedingWordsArray.length - 2 && tempExtraction.contains(",")) {
+                                tempExtraction = "";
                             }
-                            if(j==precedingWordsArray.length-2 && posSentenceArray[j].matches("IN||CD.?")){
-                                tempExtraction="";
+                            if (j == precedingWordsArray.length - 2 && posSentenceArray[j].matches("IN||CD.?")) {
+                                tempExtraction = "";
                             }
-                            extraction=tempExtraction;
+                            extraction = tempExtraction;
+                        }
+                    } else {
+                        for (int j = 0; j < precedingWordsArray.length; j++) {
+                            if (posSentenceArray[j].matches("NNP"))
+                                extraction += precedingWordsArray[j] + " ";
                         }
                     }
-                    else{
-                        for(int j=0;j<precedingWordsArray.length;j++){
-                            if(posSentenceArray[j].matches("NNP"))
-                            extraction+=precedingWordsArray[j]+" ";
-                        }
-                    }
-                    if(extraction.trim().matches("^[A-Z_0-9][a-zA-Z_0-9]*$")) {
-                        System.out.println(extraction + " | " + patternCategory + " | " + patternText+" | "+today);
-                        this.storeInstanceInDB(extraction.trim(),patternCategory,patternWords);
+                    if (extraction.trim().matches("^[A-Z_0-9][a-zA-Z_0-9]*$")) {
+                        System.out.println(extraction + "        | " + patternCategory + "          | " + realFollowingWords);
+
+                        this.storeInstanceInDB(extraction.trim(),patternCategory,realFollowingWords);
                     }
 
                 }
             }
         }
     }
+
 
     public void storeInstanceInDB(String instance, String category,String extractedPattern) {
         //store patterns in db
