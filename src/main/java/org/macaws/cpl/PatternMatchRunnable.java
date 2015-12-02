@@ -3,11 +3,14 @@ package org.macaws.cpl;
 
 import org.macaws.ke.Controller;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.regex.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 
 /**
  * Created by Malintha on 11/23/2015.
@@ -22,6 +25,12 @@ class PatternMatchRunnable implements Runnable{
     Controller c;
     int currentIteration;
     static CPLUtils cplUtils;
+    static HashMap<String,String> candidate_instances;
+    Connection con;
+    PreparedStatement ps;
+    DateFormat dateFormat;
+    Date date;
+    String today;
 
     public PatternMatchRunnable(int threadId, LinkedList<ContextualPattern> promotedpatternList, int currentIteration) throws Exception {
         this.threadId = threadId;
@@ -34,6 +43,12 @@ class PatternMatchRunnable implements Runnable{
         this.corpusSentences = cplUtils.readCorpusFromFile(1);
         upperBound = threadId==4?((length/5)*(threadId+1)+(length%5)):((length/5)*(threadId+1));
 //        cplUtils = new CPLUtils();
+        candidate_instances = new HashMap<>();
+        con = DBCon.getInstance();
+        ps = con.prepareStatement("INSERT INTO candidate_instances(instance,category,collected_on,matching_patterns, collected_iteration) VALUES (?,?,?,?,?)");
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        date = new Date();
+        today = dateFormat.format(date);
     }
 
     @Override
@@ -101,16 +116,35 @@ class PatternMatchRunnable implements Runnable{
                     }
                     else{
                         for(int j=0;j<precedingWordsArray.length;j++){
-                            if(posSentenceArray[j].matches("NNP.?"))
+                            if(posSentenceArray[j].matches("NNP"))
                             extraction+=precedingWordsArray[j]+" ";
                         }
                     }
-                    if(extraction.trim().matches("^.*[a-zA-Z].*$"))
-                    System.out.println(extraction+" | "+patternCategory + " | "+patternText);
+                    if(extraction.trim().matches("^[A-Z_0-9][a-zA-Z_0-9]*$")) {
+                        System.out.println(extraction + " | " + patternCategory + " | " + patternText+" | "+today);
+                        this.storeInstanceInDB(extraction.trim(),patternCategory,patternWords);
+                    }
+
                 }
             }
-
-
         }
     }
-}
+
+    public void storeInstanceInDB(String instance, String category,String extractedPattern) {
+        //store patterns in db
+        try {
+            ps.setString(1,instance);
+            ps.setString(2,category);
+            ps.setString(3,today);
+            ps.setString(4,extractedPattern);
+            ps.setInt(5,currentIteration);
+            ps.executeUpdate();
+        }
+
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+            }
+
+    }

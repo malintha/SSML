@@ -23,6 +23,7 @@ public class CPLUtils {
     static POSModel model = null;
     static ObjectStream<String> lineStream;
     static POSTaggerME tagger;
+    static ArrayList<String> sentCorpus;
 
     public CPLUtils() throws Exception {
         classLoader = Thread.currentThread().getContextClassLoader();
@@ -32,6 +33,9 @@ public class CPLUtils {
         tagger = new POSTaggerME(model);
     }
 
+    public void setSentCorpus(int iteration){
+        sentCorpus = this.readCorpusFromFile(iteration);
+    }
 
     public String getPosSentence(String sentence) {
         lineStream = new PlainTextByLineStream(new StringReader(sentence));
@@ -85,4 +89,12 @@ public class CPLUtils {
         return finedTextsArrayList;
     }
 
+    public int getOccurancesInCorpus(String text){
+        int occurrance = 0;
+        for(String s:sentCorpus){
+            if(s.contains(text))
+                occurrance++;
+        }
+        return occurrance;
+    }
 }

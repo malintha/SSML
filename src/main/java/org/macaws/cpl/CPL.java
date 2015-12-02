@@ -30,7 +30,7 @@ public class CPL {
     static int currentIteration;
     static ArrayList<String> s;
     static CPLUtils cplUtils;
-
+    static PatternMatchRunnable patternMatchRunnable;
     public static void main(String[] args) throws Exception {
 
         CPL cpl = new CPL();
@@ -38,7 +38,8 @@ public class CPL {
         cpl.initialize(1);
 //        cplUtils.writeCorpusToFile(1);
 //        cpl.runCPL();
-        cpl.extractInstancesFromPromotedPatterns();
+//        cpl.extractInstancesFromPromotedPatterns();
+        cpl.promoteInstances();
     }
 
     /**
@@ -48,14 +49,8 @@ public class CPL {
      */
 
     public void initialize(int currentIteration) throws Exception {
-//        classLoader = Thread.currentThread().getContextClassLoader();
-//        modelIn = classLoader.getResourceAsStream("openNLP/en-pos-maxent.bin");
-//        perfMon = new PerformanceMonitor(System.err, "sent");
-//        model = new POSModel(modelIn);
-//        tagger = new POSTaggerME(model);
-
-
         cplUtils = new CPLUtils();
+        cplUtils.setSentCorpus(currentIteration);
         con = DBCon.getInstance();
         this.currentIteration = currentIteration;
         s = new ArrayList<String>();
@@ -163,9 +158,77 @@ public class CPL {
 
         //promote patterns
 
-        //extract instances from promoted patterns
+        //extract instances from promoted patterns - done
 
+        //promote instances
     }
+
+    public void promoteInstances() throws SQLException {
+        //retrieve candidate instances that are not in promoted list. if a part of the name appears,
+        // check if the full name has occurred in the text corpus more than once, append all the patterns belonged
+        // to that category to promoted patterns list
+        //
+        //count belonging categories
+        //
+        // if appears more than 2 times of a mutually exclusive occurrances promote
+        HashMap<Integer,ContextualInstance> candidateInstancesList = new HashMap<>();
+        PreparedStatement psRetCandidate = con.prepareStatement("SELECT * FROM candidate_instances");
+        ResultSet rsCandidateIns = psRetCandidate.executeQuery();
+        PreparedStatement psRetPromotedIns = con.prepareStatement("SELECT * FROM promoted_instances");
+        ResultSet rsPromotedIns = psRetPromotedIns.executeQuery();
+        ArrayList<String> promotedInsList = new ArrayList();
+
+        while(rsPromotedIns.next()){
+            promotedInsList.add(rsPromotedIns.getString("instance"));
+        }
+
+        System.out.println(promotedInsList);
+
+        while(rsCandidateIns.next()){
+            String suggestedfullName;
+            for(String promotedIns:promotedInsList){
+                String candidateName = rsCandidateIns.getString("instance");
+                if(promotedIns.contains(candidateName)){
+                    suggestedfullName = promotedIns;
+                    //if suggestedFullName appears more than 3 times in db it becomes the full name and add all the patterns
+                    //to that instance.
+                    int occurrence = cplUtils.getOccurancesInCorpus(suggestedfullName);
+                    System.out.println(candidateName+" | "+suggestedfullName+" | "+occurrence);
+                    if(occurrence>3){
+                        this.updatePromotedInstance(suggestedfullName,rsCandidateIns.getString("category"),rsCandidateIns.getString("matching_patterns"));
+
+
+                    }
+                }
+
+            }
+        }
+    }
+
+    public void updatePromotedInstance(String instance, String category, String newPattern) throws SQLException {
+        //can be a problem is multiple entries for the name name is there
+        PreparedStatement psRetPromotedInstance = con.prepareStatement("select patterns from promoted_instances where instance = ? and category = ?");
+        psRetPromotedInstance.setString(1,instance);
+        psRetPromotedInstance.setString(2,category);
+
+        ResultSet rsRetPromotedInstance = psRetPromotedInstance.executeQuery();
+        String availablePatterns="";
+        while(rsRetPromotedInstance.next()){
+            availablePatterns = rsRetPromotedInstance.getString("patterns");
+            if(availablePatterns!="")
+                availablePatterns+= ", "+newPattern;
+            else{
+                availablePatterns+=newPattern;
+            }
+        }
+
+        PreparedStatement psUpdatePromotedInstance = con.prepareStatement("UPDATE promoted_instances SET patterns = ? WHERE instance = ? and category = ?");
+        psUpdatePromotedInstance.setString(1,availablePatterns);
+        psUpdatePromotedInstance.setString(2,instance);
+        psUpdatePromotedInstance.setString(3,category);
+        psUpdatePromotedInstance.executeUpdate();
+    }
+
 
     public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws Exception {
 
