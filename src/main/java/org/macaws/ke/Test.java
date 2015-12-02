@@ -122,25 +122,41 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
+CPLUtils cu = new CPLUtils();
+        ArrayList<String> al = cu.readCorpusFromFile(1);
 
-        String patternText = "argument took 3 wickets";
-        CPLUtils cu = new CPLUtils();
-        String patternPos = cu.getPosSentence(patternText);
+for(String s: al)
+            if(s.matches("(.*)\\sis\\sa.*\\s(.*) Cricketer.")) {
+                System.out.println("Sentence : "+ s);
+                String ar1 = s.replaceAll("(.*) is an (.*) Cricketer.","$1");
+                String ar2 = s.replaceAll("(.*) is an (.*) Cricketer.","$2");
+                System.out.println("argument 1 : " + ar1 + " , argument 2 : " + ar2);
+                System.out.println("Predicate : IsAMemberOfTeam("+ ar1+", "+ar2+")");
+                System.out.println();
 
-        if(patternPos.contains("CD")) {
-            int CDIndex = 0;
-            for (int j = 0; j < patternPos.split(" ").length; j++) {
-                if (patternPos.split(" ")[j].equals("CD"))
-                    CDIndex = j;
-            }
-            String[] patternTextSplitArray = patternText.split(" ");
-            patternTextSplitArray[CDIndex] = "[a-zA-Z_0-9]{1,}";
-            patternText = "";
-            for(int j=0;j<patternTextSplitArray.length;j++)
-                patternText+=patternTextSplitArray[j]+" ";
-            System.out.println(patternText);
-            System.out.println("Chaminda Vaas took 8 wickets for 19 runs in 2001/02 against Zimbabwe".matches(".*"+patternText.replaceAll("argument","").trim()+".*"));
         }
+
+//        String patternText = "argument took three wickets";
+//        System.out.println(patternText.substring(0,patternText.indexOf("took")));
+//        Pattern p = Pattern.compile("passed 14,000 [a-zA-Z_0-9]{1,} runs");
+//        Matcher m = p.matcher("");
+//        CPLUtils cu = new CPLUtils();
+//        String patternPos = cu.getPosSentence(patternText);
+//
+//        if(patternPos.contains("CD")) {
+//            int CDIndex = 0;
+//            for (int j = 0; j < patternPos.split(" ").length; j++) {
+//                if (patternPos.split(" ")[j].equals("CD"))
+//                    CDIndex = j;
+//            }
+//            String[] patternTextSplitArray = patternText.split(" ");
+//            patternTextSplitArray[CDIndex] = "[a-zA-Z_0-9]{1,}";
+//            patternText = "";
+//            for(int j=0;j<patternTextSplitArray.length;j++)
+//                patternText+=patternTextSplitArray[j]+" ";
+//            System.out.println(patternText);
+//            System.out.println("Chaminda Vaas took 8 wickets for 19 runs in 2001/02 against Zimbabwe".matches(".*"+patternText.replaceAll("argument","").trim()+".*"));
+//        }
 //        ArrayList<String> al = cu.readCorpusFromFile(1);
 //        for(String ss:al)
 //            System.out.println(ss);

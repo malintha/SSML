@@ -280,7 +280,6 @@ public class NaiveBayes {
         //Tokenizes the text and creates a new document
         Document doc = TextTokenizer.tokenize(text);
 
-
         String category;
         String feature;
         Integer occurrences;

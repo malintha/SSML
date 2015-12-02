@@ -1,10 +1,13 @@
 package org.macaws.cpl;
 
+
 import org.macaws.ke.Controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.regex.*;
 
 /**
  * Created by Malintha on 11/23/2015.
@@ -12,7 +15,7 @@ import java.util.ArrayList;
 class PatternMatchRunnable implements Runnable{
 
     int threadId;
-    ArrayList<ContextualPattern> promotedPatternList;
+    LinkedList<ContextualPattern> promotedPatternList;
     int length;
     int upperBound;
     ArrayList<String> corpusSentences;
@@ -20,7 +23,7 @@ class PatternMatchRunnable implements Runnable{
     int currentIteration;
     static CPLUtils cplUtils;
 
-    public PatternMatchRunnable(int threadId, ArrayList<ContextualPattern> promotedpatternList, int currentIteration) throws Exception {
+    public PatternMatchRunnable(int threadId, LinkedList<ContextualPattern> promotedpatternList, int currentIteration) throws Exception {
         this.threadId = threadId;
         this.promotedPatternList = promotedpatternList;
         this.length = promotedpatternList.size();
@@ -37,11 +40,13 @@ class PatternMatchRunnable implements Runnable{
     public void run() {
 
         for(int i=(length/5)*threadId;i<upperBound;i++){
+//            System.out.println("ThreadId = "+threadId+" i ="+i+" pattern : "+promotedPatternList.get(i).getText());
             String patternText = promotedPatternList.get(i).getText();
-            String patternWords = patternText.replaceAll("argument","");
+            String patternWords = patternText.replaceAll("argument","").trim();
             String patternCategory = promotedPatternList.get(i).getCategory();
             String patternPos = cplUtils.getPosSentence(patternText);
-            String patternTextRegex;
+            String patternTextRegex = null;
+            String precedingWordSplitter = "";
 
             if(patternPos.contains("CD")) {
                 int CDIndex = 0;
@@ -50,28 +55,34 @@ class PatternMatchRunnable implements Runnable{
                         CDIndex = j;
                 }
                 String[] patternWordsSplitArray = patternWords.split(" ");
-                patternWordsSplitArray[CDIndex] = "[a-zA-Z_0-9]{1,}";
+                patternWordsSplitArray[CDIndex-1] = "[a-zA-Z_0-9]{1,}";
                 patternText = "";
                 for (int j = 0; j < patternWordsSplitArray.length; j++)
                     patternText += patternWordsSplitArray[j] + " ";
 
                 patternText=patternText.trim();
                 patternTextRegex = ".*"+patternText+".*";
-                System.out.println("### "+patternTextRegex);
+                precedingWordSplitter = patternWords.split(" ")[0];
+            }
+            if(patternTextRegex==null) {
+                patternTextRegex = ".*" + patternWords.trim() + ".*";
+                precedingWordSplitter = patternWords;
             }
 
-            patternTextRegex = ".*"+patternWords+".*";
+            System.out.println(i+" "+patternTextRegex + " |"+patternWords);
 
             for(String sentence: corpusSentences){
                 //matches proper nouns, not scores
 //                String patternRegex = ".*([a-zA-Z]{1,}\\s?){1,3}"+patternText.replaceAll("argument","")+".*";
                 if(sentence.matches(patternTextRegex)){
-                    String precedingWords = sentence.substring(0, sentence.indexOf(patternWords));
+                    String precedingWords = sentence.substring(0, sentence.indexOf(precedingWordSplitter));
+//                    System.out.println(precedingWords);
                     String posSentence = cplUtils.getPosSentence(sentence.replace("-","").replaceAll("^(.*)\\.$","$1"));
                     String[] precedingWordsArray = precedingWords.split(" ");
                     String[] posSentenceArray = posSentence.trim().split(" ");
                     String extraction="";
                     String tempExtraction = "";
+
                     if(precedingWordsArray.length>=3){
                         for(int j=precedingWordsArray.length-3;j<precedingWordsArray.length;j++){
                             if(posSentenceArray[j].matches("NNP.?")) {
@@ -98,7 +109,6 @@ class PatternMatchRunnable implements Runnable{
                     System.out.println(extraction+" | "+patternCategory + " | "+patternText);
                 }
             }
-
 
 
         }

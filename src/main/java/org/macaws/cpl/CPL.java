@@ -171,20 +171,21 @@ public class CPL {
 
         //load promoted patterns
         PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");
-        ArrayList<ContextualPattern> patternArrayList = new ArrayList<>();
+        LinkedList<ContextualPattern> patternArrayList = new LinkedList<>();
 
         for (int i = this.currentIteration - 1; i >= 0; i--) {
+            System.out.println("Current Iteration : "+currentIteration+" i = "+i);
             psRetrieve.setInt(1, i);
             ResultSet rst = psRetrieve.executeQuery();
             while (rst.next()) {
                 patternArrayList.add(new ContextualPattern(rst.getString("Category"), rst.getString("Pattern")));
             }
         }
-
+        System.out.println("Retrieved "+patternArrayList.size()+" patterns.");
         //create 5 threads, share patterns between them
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
         for (int i = 0; i < 5; i++) {
-            threadPool.submit(new PatternMatchRunnable(i, patternArrayList, 2));
+            threadPool.submit(new PatternMatchRunnable(i, patternArrayList, 1));
         }
 
         //for each patterns, search for occurrences
