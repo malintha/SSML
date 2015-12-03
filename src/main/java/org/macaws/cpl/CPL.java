@@ -31,10 +31,10 @@ public class CPL {
     static ArrayList<String> s;
     static CPLUtils cplUtils;
     static PatternMatchRunnable patternMatchRunnable;
+
     public static void main(String[] args) throws Exception {
 
         CPL cpl = new CPL();
-
         cpl.initialize(4);
 //        cplUtils.writeCorpusToFile(1);
 //        cpl.runCPL();
@@ -203,7 +203,7 @@ public class CPL {
                     int occurrence = cplUtils.getOccurancesInCorpus(suggestedfullName);
 //                    System.out.println(candidateName+" | "+suggestedfullName+" | "+occurrence);
                     if(occurrence>3){
-                        //this.updatePromotedInstance(suggestedfullName,rsCandidateIns.getString("category"),rsCandidateIns.getString("matching_patterns"));
+                        this.updatePromotedInstance(suggestedfullName,rsCandidateIns.getString("category"),rsCandidateIns.getString("matching_patterns"));
 
                     }
                     break;
@@ -227,7 +227,7 @@ public class CPL {
 
             }
         }
-//        System.out.println("Laxman patterns : "+candidateContextualInstances.get("Laxman").patternList.size());
+
         Iterator iterator = candidateContextualInstances.entrySet().iterator();
 
         while(iterator.hasNext()){
@@ -242,29 +242,48 @@ public class CPL {
                 Map.Entry<String,Float> pair1 = (Map.Entry<String, Float>) promotedInstanceCategoryIt.next();
                 promotedInstance.getCategoricalPatterns(pair1.getKey());
 
+                String instanceName = pair.getKey();
                 String promotedCategory = pair1.getKey();
                 float certainty = pair1.getValue();
                 ArrayList<String> supportivepatterns = promotedInstance.getCategoricalPatterns(promotedCategory);
 
                 System.out.println("instance: "+pair.getKey()+" | "+promotedCategory+" certainty: "+certainty+" supportive patterns: "+supportivepatterns);
+                System.out.println("## "+promotedInstance.patternList);
+                System.out.println();
+
+                addpromotedInstancesToKB(instanceName,promotedCategory,supportivepatterns,certainty,"CPL");
 
 
-//                Iterator supportivePatternsSelector = promotedInstance.patternList.entrySet().iterator();
-//                System.out.println(promotedInstance.patternList);
-//
-//                while(supportivePatternsSelector.hasNext()){
-//                    Map.Entry<String,String> pair2 = (Map.Entry<String, String>) supportivePatternsSelector.next();
-//                    if(pair2.getValue().equalsIgnoreCase(promotedCategory))
-//                        System.out.print(pair2.getKey() + " | ");
-//                }
-//                System.out.println();
+
             }
+        }
+    }
 
-//            System.out.println(pair.getKey()+" | "+categories);
-
+    public void addpromotedInstancesToKB(String aInstance, String aCategory, ArrayList<String> aSupportivePatterns, float aCertainty, String aLearner) throws SQLException {
+        PreparedStatement psInserttoPromotedInstances = con.prepareStatement("insert into promoted_instances(instance,category,patterns,certainty,seed,learnedIteration) values (?,?,?,?,?,?)");
+        psInserttoPromotedInstances.setString(1,aInstance);
+        psInserttoPromotedInstances.setString(2,aCategory);
+        String supportivePatterns = "";
+        for(int i=0;i<aSupportivePatterns.size();i++){
+            if(i!=aSupportivePatterns.size()-1){
+                supportivePatterns+= aSupportivePatterns.get(i)+", ";
+            }
+            else{
+                supportivePatterns+=aSupportivePatterns.get(i);
+            }
         }
 
+        psInserttoPromotedInstances.setString(3,supportivePatterns);
+        psInserttoPromotedInstances.setFloat(4,aCertainty);
+        psInserttoPromotedInstances.setString(5, aLearner);
+        psInserttoPromotedInstances.setInt(6,currentIteration);
+        psInserttoPromotedInstances.executeUpdate();
+
+        //Now add the instance into ontology
+
     }
+
+
 
     public void updatePromotedInstance(String instance, String category, String newPattern) throws SQLException {
         //can be a problem is multiple entries for the name name is there

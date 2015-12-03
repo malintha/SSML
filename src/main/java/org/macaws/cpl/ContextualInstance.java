@@ -60,7 +60,7 @@ public class ContextualInstance {
 
         if (numOfSuggestedCategories == 1) {
             Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
-            if (pair.getValue() >= 3) {
+            if (pair.getValue() > 3) {
                 this.category = pair.getKey();
                 this.certainty = 100;
                 returnCategories.put(category, certainty);
