@@ -122,19 +122,31 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-CPLUtils cu = new CPLUtils();
-        ArrayList<String> al = cu.readCorpusFromFile(1);
+        float a;
+        a = 3/7;
+        System.out.println(a);
 
-for(String s: al)
-            if(s.matches("(.*)\\sis\\sa.*\\s(.*) Cricketer.")) {
-                System.out.println("Sentence : "+ s);
-                String ar1 = s.replaceAll("(.*) is an (.*) Cricketer.","$1");
-                String ar2 = s.replaceAll("(.*) is an (.*) Cricketer.","$2");
-                System.out.println("argument 1 : " + ar1 + " , argument 2 : " + ar2);
-                System.out.println("Predicate : IsAMemberOfTeam("+ ar1+", "+ar2+")");
-                System.out.println();
-
-        }
+        HashMap<String,Integer> hm = new HashMap<>();
+        hm.put("Name",1);
+        hm.put("hhh",3);
+        Object k =  hm.get("hhh");
+        if(k==null)
+            System.out.println(0);
+        else
+            System.out.println(Integer.valueOf(k.toString()));
+//CPLUtils cu = new CPLUtils();
+//        ArrayList<String> al = cu.readCorpusFromFile(1);
+//
+//for(String s: al)
+//            if(s.matches("(.*)\\sis\\sa.*\\s(.*) Cricketer.")) {
+//                System.out.println("Sentence : "+ s);
+//                String ar1 = s.replaceAll("(.*) is an (.*) Cricketer.","$1");
+//                String ar2 = s.replaceAll("(.*) is an (.*) Cricketer.","$2");
+//                System.out.println("argument 1 : " + ar1 + " , argument 2 : " + ar2);
+//                System.out.println("Predicate : IsAMemberOfTeam("+ ar1+", "+ar2+")");
+//                System.out.println();
+//
+//        }
 
 //        String patternText = "argument took three wickets";
 //        System.out.println(patternText.substring(0,patternText.indexOf("took")));

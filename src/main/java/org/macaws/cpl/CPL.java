@@ -184,26 +184,61 @@ public class CPL {
 
         System.out.println(promotedInsList);
 
+        HashMap<String,ContextualInstance> candidateContextualInstances = new HashMap<>();
+
         while(rsCandidateIns.next()){
             String suggestedfullName;
+            int candidateId = rsCandidateIns.getInt("id");
+            String instanceName = rsCandidateIns.getString("instance").trim();
+            String suggestedCategory = rsCandidateIns.getString("category").trim();
+            String pattern = rsCandidateIns.getString("matching_patterns").trim();
+            boolean isAlreadyPromoted = false;
             for(String promotedIns:promotedInsList){
-                String candidateName = rsCandidateIns.getString("instance");
+                String candidateName = instanceName;
                 if(promotedIns.contains(candidateName)){
+                    isAlreadyPromoted = true;
                     suggestedfullName = promotedIns;
                     //if suggestedFullName appears more than 3 times in db it becomes the full name and add all the patterns
                     //to that instance.
                     int occurrence = cplUtils.getOccurancesInCorpus(suggestedfullName);
-                    System.out.println(candidateName+" | "+suggestedfullName+" | "+occurrence);
+//                    System.out.println(candidateName+" | "+suggestedfullName+" | "+occurrence);
                     if(occurrence>3){
-                        this.updatePromotedInstance(suggestedfullName,rsCandidateIns.getString("category"),rsCandidateIns.getString("matching_patterns"));
-                    }
-                }
-                //else
-                //get count of the categories that it co-occur with
-                
+                        //this.updatePromotedInstance(suggestedfullName,rsCandidateIns.getString("category"),rsCandidateIns.getString("matching_patterns"));
 
+                    }
+                    break;
+                }
+            }
+
+            if(isAlreadyPromoted)
+                continue;
+
+            //else
+            //get count of the categories that it co-occur with
+            //add to a hashmap <instance name, contextualInstance> // add pattern to patterns list CI.addpattern(Category,pattern)
+            //if found again, increase particular category occurrence contextualInstance.increaseOccurrence(String Category)
+            Object contextualInstance = candidateContextualInstances.get(instanceName);
+            if(contextualInstance==null){
+                candidateContextualInstances.put(instanceName, new ContextualInstance(candidateId, instanceName,suggestedCategory,pattern));
+            }
+            else{
+                ContextualInstance availableInstance = (ContextualInstance) contextualInstance;
+                availableInstance.addPattern(pattern,suggestedCategory);
             }
         }
+
+        Iterator iterator = candidateContextualInstances.entrySet().iterator();
+
+        while(iterator.hasNext()){
+            Map.Entry<String,ContextualInstance> pair = (Map.Entry<String, ContextualInstance>) iterator.next();
+            System.out.println(pair.getKey()+" | "+pair.getValue().categoryCount);
+
+            HashMap<String,Float> categories = pair.getValue().calculateCategory();
+            System.out.println(pair.getKey()+" | "+categories);
+
+
+        }
+
     }
 
     public void updatePromotedInstance(String instance, String category, String newPattern) throws SQLException {

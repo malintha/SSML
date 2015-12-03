@@ -11,6 +11,7 @@ import org.macaws.ke.Controller;
 import java.io.*;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Malintha on 11/24/2015.
@@ -24,6 +25,7 @@ public class CPLUtils {
     static ObjectStream<String> lineStream;
     static POSTaggerME tagger;
     static ArrayList<String> sentCorpus;
+    static HashMap<String, ArrayList<String>> mutuallyExclusiveCategories;
 
     public CPLUtils() throws Exception {
         classLoader = Thread.currentThread().getContextClassLoader();
@@ -31,6 +33,7 @@ public class CPLUtils {
         perfMon = new PerformanceMonitor(System.err, "sent");
         model = new POSModel(modelIn);
         tagger = new POSTaggerME(model);
+
     }
 
     public void setSentCorpus(int iteration){
@@ -97,4 +100,8 @@ public class CPLUtils {
         }
         return occurrance;
     }
+
+
+
+
 }
