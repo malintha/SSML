@@ -1,0 +1,32 @@
+##itr 1
+
+instance: England | Team certainty: 100.0 supportive patterns: [captaincy with Vaughan, in the semi-final, in the semifinals, in the finals., in the 16th]
+instance: Laxman | Batsman certainty: 100.0 supportive patterns: [scored two fifties, scored three consecutive, scored just two, scored an unbeaten]
+instance: Test | Team certainty: 100.0 supportive patterns: [captaincy in 2008,, captain, making him, captain in 2005., captain when he, captain with 24, in the country,]
+instance: Dhoni | Batsman certainty: 83.33333 supportive patterns: [averages in excess, scored 91 not, scored 29 off, scored his maiden]
+instance: Ponting | Batsman certainty: 58.823532 supportive patterns: [scored 55 in, scored 156, the, scored only 100, scored his fifth, scored double-centuries in, scored for Australia, scored 10 not, scored 467 runs, scored 10 and]
+
+Process finished with exit code 0
+
+##itr 4
+
+[Kumar Sangakkara, Mahela Jayawardene, Sachin Tendulkar, Brendon McCullum, Ishant Sharma, Brett Lee, Shoaib Akhtar, Sri Lanka, India, Pakistan, Australia]
+instance: England | Team certainty: 75.0 supportive patterns: [captaincy with Vaughan, in the semi-final, in the semifinals, captain Ray Illingworth, captain Michael Vaughan, in the finals., in the 16th]
+instance: Kapil | Team certainty: 100.0 supportive patterns: [captaincy several times.]
+instance: Pathan | Batsman certainty: 60.000004 supportive patterns: [made his name, made starts in]
+instance: Karthik | Batsman certainty: 100.0 supportive patterns: [made 48 and, made only nine]
+instance: Ponting | Batsman certainty: 70.83333 supportive patterns: [scored 55 in, scored 156, the, scored only 100, scored his fifth, made 98 in, scored double-centuries in, scored for Australia, scored 10 not, scored 467 runs, scored 10 and]
+instance: Bopara | Batsman certainty: 100.0 supportive patterns: [made 59 and, made 16 runs.]
+instance: Cook | Batsman certainty: 88.2353 supportive patterns: [scored with 64, made 46 to, made 79 in, made 74 in, scored just ten, scored 35 in, made good starts, scored in England's, made 34 in, scored 60 in, made 56, his, scored 105 in, made 59 against, scored seven runs]
+instance: Ashes | Team certainty: 100.0 supportive patterns: [captain.]
+instance: Pietersen | Batsman certainty: 80.0 supportive patterns: [scored 1,546 first-class, made 58 against, made to honour]
+instance: Morgan | Batsman certainty: 100.0 supportive patterns: [made 39., scored 71 in, made yet another, made 28 in, made 12 in, made scores of]
+instance: Jadeja | Bowler certainty: 66.66667 supportive patterns: [took 24 wickets,]
+instance: Symonds | Batsman certainty: 100.0 supportive patterns: [scored more than, made his long-awaited]
+instance: Test | Team certainty: 100.0 supportive patterns: [captaincy in 2008,, captain, making him, captaincy., captain in 2005., captain when he, captain with 24, in the country,]
+instance: Yuvraj | Batsman certainty: 66.66667 supportive patterns: [made his first-class, made his comeback]
+instance: Dhoni | Batsman certainty: 76.92308 supportive patterns: [averages in excess, scored 91 not, scored 29 off, made two telling, scored his maiden]
+instance: Saha | Batsman certainty: 100.0 supportive patterns: [made the East, made his one-day]
+instance: Laxman | Batsman certainty: 100.0 supportive patterns: [scored two fifties, scored three consecutive, made his first-class, scored just two, scored an unbeaten, made his Under-19]
+instance: Wikipedia | Batsman certainty: 100.0 supportive patterns: [made by people]
+instance: Boult | Bowler certainty: 66.66667 supportive patterns: [managed to play]

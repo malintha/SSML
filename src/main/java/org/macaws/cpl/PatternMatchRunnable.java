@@ -40,7 +40,7 @@ class PatternMatchRunnable implements Runnable{
         c = new Controller();
         cplUtils = new CPLUtils();
 //        this.corpusSentences = c.preProcess(1); //cplUtils.readCorpusFromFile(1);
-        this.corpusSentences = cplUtils.readCorpusFromFile(1);
+        this.corpusSentences = cplUtils.readCorpusFromFile(currentIteration);
         upperBound = threadId==4?((length/5)*(threadId+1)+(length%5)):((length/5)*(threadId+1));
 //        cplUtils = new CPLUtils();
         candidate_instances = new HashMap<>();

@@ -35,10 +35,10 @@ public class CPL {
 
         CPL cpl = new CPL();
 
-        cpl.initialize(1);
+        cpl.initialize(4);
 //        cplUtils.writeCorpusToFile(1);
 //        cpl.runCPL();
-//        cpl.extractInstancesFromPromotedPatterns();
+//        cpl.extractInstancesFromPromotedPatterns(4);
         cpl.promoteInstances();
     }
 
@@ -90,7 +90,7 @@ public class CPL {
         instances.put("team", team);
 
         Controller c = new Controller();
-        s = c.preProcess(1);
+        s = c.preProcess(this.currentIteration);
 
         HashMap<String, ArrayList<String>> candidatePatterns = new HashMap<>();
         candidatePatterns.put("batsman", new ArrayList<String>());
@@ -262,7 +262,6 @@ public class CPL {
 
 //            System.out.println(pair.getKey()+" | "+categories);
 
-
         }
 
     }
@@ -292,7 +291,7 @@ public class CPL {
     }
 
 
-    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns() throws Exception {
+    public LinkedHashMap<String, String> extractInstancesFromPromotedPatterns(int iteration) throws Exception {
 
         //load promoted patterns
         PreparedStatement psRetrieve = con.prepareStatement("select * from promoted_patterns where PromotedIteration = ?");
@@ -310,7 +309,7 @@ public class CPL {
         //create 5 threads, share patterns between them
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
         for (int i = 0; i < 5; i++) {
-            threadPool.submit(new PatternMatchRunnable(i, patternArrayList, 1));
+            threadPool.submit(new PatternMatchRunnable(i, patternArrayList, iteration));
         }
 
         //for each patterns, search for occurrences
