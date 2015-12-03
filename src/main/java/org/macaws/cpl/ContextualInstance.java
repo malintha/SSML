@@ -1,5 +1,6 @@
 package org.macaws.cpl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -95,39 +96,49 @@ public class ContextualInstance {
                 if (b)
                     count++;
             }
-            System.out.println("ME categories : "+count);
-            //if only one ME category
-            if (count == 1) {
-                ArrayList<String> categories = new ArrayList<>();
-                int totalMentions = 0;
-                while (categoryCountIterator.hasNext()) {
-                    Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
-                    totalMentions+=pair.getValue();
-                }
 
-                while (categoryCountIterator.hasNext()) {
-                    Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
-                    if(pair.getValue()>=3){
-                        float categoryCertainty = (pair.getValue()/totalMentions)*100;
-                        returnCategories.put(pair.getKey(),categoryCertainty);
-                    }
-                }
-            }
+            //if only one ME category
+//            if (count == 1) {
+//                ArrayList<String> categories = new ArrayList<>();
+//                int totalMentions = 0;
+//                while (categoryCountIterator.hasNext()) {
+//                    Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
+//                    totalMentions+=pair.getValue();
+//                }
+//
+//                while (categoryCountIterator.hasNext()) {
+//                    Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
+//                    if(pair.getValue()>=3){
+//                        float categoryCertainty = (pair.getValue()/totalMentions)*100;
+//                        returnCategories.put(pair.getKey(),categoryCertainty);
+//                    }
+//                }
+//            }
 
             //more than one ME categories
-            else{
+//            else{
+            categoryCountIterator = null;
+            categoryCountIterator = categoryCount.entrySet().iterator();
+
                 int totalMentions = 0;
                 while (categoryCountIterator.hasNext()) {
                     Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
                     totalMentions+=pair.getValue();
+
                 }
+//            System.out.println("ME categories : "+count);
+//            System.out.println(totalMentions);
+            categoryCountIterator = null;
+            categoryCountIterator = categoryCount.entrySet().iterator();
 
                 while (categoryCountIterator.hasNext()) {
                     Map.Entry<String, Integer> pair = (Map.Entry<String, Integer>) categoryCountIterator.next();
-                    if(pair.getValue()>2) {
-                        float categoryCertainty = (pair.getValue() / totalMentions) * 100;
-                        System.out.println(pair.getKey()+" certainty : "+ categoryCertainty);
-                        if (categoryCertainty > 40) {
+                    int occurrences = pair.getValue();
+                    if(occurrences>0) {
+
+                        float categoryCertainty = ((float)occurrences / (float)totalMentions) * 100;
+//                        System.out.println(pair.getKey()+" Occu :"+occurrences+"total count : "+totalMentions+" certainty : "+ categoryCertainty);
+                        if (categoryCertainty > 50) {
                             returnCategories.put(pair.getKey(), categoryCertainty);
                         }
                     }
@@ -135,19 +146,23 @@ public class ContextualInstance {
             }
 
 
-        }
+//        }
         return returnCategories;
     }
 
+
     public ArrayList<String> getCategoricalPatterns(String category){
         ArrayList<String> patternsOfCategory = new ArrayList<>();
+
+//        System.out.println(patternList);
         Iterator it = patternList.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry<String,String> pair = (Map.Entry<String, String>) it.next();
-            if(pair.getKey().equalsIgnoreCase(category)){
-                patternsOfCategory.add(pair.getValue());
+            if(pair.getValue().equalsIgnoreCase(category)){
+                patternsOfCategory.add(pair.getKey());
             }
         }
+//        System.out.println("#selected: "+patternsOfCategory);
         return patternsOfCategory;
     }
 

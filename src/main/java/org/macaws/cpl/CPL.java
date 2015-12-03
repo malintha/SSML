@@ -213,28 +213,54 @@ public class CPL {
             if(isAlreadyPromoted)
                 continue;
 
-            //else
             //get count of the categories that it co-occur with
             //add to a hashmap <instance name, contextualInstance> // add pattern to patterns list CI.addpattern(Category,pattern)
             //if found again, increase particular category occurrence contextualInstance.increaseOccurrence(String Category)
-            Object contextualInstance = candidateContextualInstances.get(instanceName);
+            ContextualInstance contextualInstance = candidateContextualInstances.get(instanceName);
             if(contextualInstance==null){
-                candidateContextualInstances.put(instanceName, new ContextualInstance(candidateId, instanceName,suggestedCategory,pattern));
+                candidateContextualInstances.put(instanceName, new ContextualInstance(candidateId, instanceName, suggestedCategory, pattern));
             }
             else{
-                ContextualInstance availableInstance = (ContextualInstance) contextualInstance;
-                availableInstance.addPattern(pattern,suggestedCategory);
+
+                contextualInstance.patternList.put(pattern,suggestedCategory);
+                contextualInstance.increseCategoryCount(suggestedCategory);
+
             }
         }
-
+//        System.out.println("Laxman patterns : "+candidateContextualInstances.get("Laxman").patternList.size());
         Iterator iterator = candidateContextualInstances.entrySet().iterator();
 
         while(iterator.hasNext()){
+            //name vs object
             Map.Entry<String,ContextualInstance> pair = (Map.Entry<String, ContextualInstance>) iterator.next();
-            System.out.println(pair.getKey()+" | "+pair.getValue().categoryCount);
+//            System.out.println(pair.getKey()+" | "+pair.getValue().categoryCount);
+            ContextualInstance promotedInstance =  pair.getValue();
+            HashMap<String,Float> categories = promotedInstance.calculateCategory();
+            Iterator promotedInstanceCategoryIt = categories.entrySet().iterator();
+            //this is the promoted category vs certainty
+            while(promotedInstanceCategoryIt.hasNext()){
+                Map.Entry<String,Float> pair1 = (Map.Entry<String, Float>) promotedInstanceCategoryIt.next();
+                promotedInstance.getCategoricalPatterns(pair1.getKey());
 
-            HashMap<String,Float> categories = pair.getValue().calculateCategory();
-            System.out.println(pair.getKey()+" | "+categories);
+                String promotedCategory = pair1.getKey();
+                float certainty = pair1.getValue();
+                ArrayList<String> supportivepatterns = promotedInstance.getCategoricalPatterns(promotedCategory);
+
+                System.out.println("instance: "+pair.getKey()+" | "+promotedCategory+" certainty: "+certainty+" supportive patterns: "+supportivepatterns);
+
+
+//                Iterator supportivePatternsSelector = promotedInstance.patternList.entrySet().iterator();
+//                System.out.println(promotedInstance.patternList);
+//
+//                while(supportivePatternsSelector.hasNext()){
+//                    Map.Entry<String,String> pair2 = (Map.Entry<String, String>) supportivePatternsSelector.next();
+//                    if(pair2.getValue().equalsIgnoreCase(promotedCategory))
+//                        System.out.print(pair2.getKey() + " | ");
+//                }
+//                System.out.println();
+            }
+
+//            System.out.println(pair.getKey()+" | "+categories);
 
 
         }
